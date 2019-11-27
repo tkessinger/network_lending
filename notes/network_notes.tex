@@ -1,0 +1,180 @@
+\documentclass[13pt]{amsart}
+
+\usepackage{amsfonts,latexsym,amsthm,amssymb,amsmath,amscd,euscript}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{charter}
+\usepackage{natbib}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage[usenames,dvipsnames]{pstricks}
+
+\usepackage{hyperref}
+\hypersetup{
+    pdffitwindow=false,            % window fit to page
+    pdfstartview={Fit},            % fits width of page to window
+    pdftitle={Notes on NetworkLending},     % document title
+    pdfauthor={Taylor Kessinger},         % author name
+    pdfsubject={},                 % document topic(s)
+    pdfnewwindow=true,             % links in new window
+    colorlinks=true,               % coloured links, not boxed
+    linkcolor=OrangeRed,      % colour of internal links
+    citecolor=ForestGreen,       % colour of links to bibliography
+    filecolor=Orchid,            % colour of file links
+    urlcolor=Cerulean           % colour of external links
+}
+
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\C}{\mathcal{C}}
+
+\begin{document}
+
+This is a series of notes on \texttt{NetworkLending}, a \texttt{Julia} package for modeling the evolution of cooperation with a central bank that lends money and expects repayment, as well as the underlying theory.
+The game played is a public goods game with lending and repayment, played pairwise.
+Each individual has a strategy that ranges from $0$ to $3$, with the larger ``bit'' representing whether they defect or cooperate in the PGG and the smaller ``bit'' representing whether they shirk or pay back loans.
+The pairwise game proceeds as follows:
+\begin{itemize}
+    \item The bank lends each individual $1$ unit of capital.
+    If the individual has a ``bad'' reputation, they are instead lent $1-d$ units of capital, with $d$ a decrement for being a bad actor.
+    \item Cooperators invest all their money in the common pot.
+    Defectors invest none.
+    \item The money in the pot is multiplied by a synergy factor $r$ and evenly distributed among the players.
+    \item Shirkers do not pay the bank back.
+    Payersback pay the bank an amount of money $z$ (from German ``Zins'', meaning interest).
+\end{itemize}
+Strategies are labeled as follows:
+\begin{itemize}
+    \item $0$ is shirk/defect.
+    \item $1$ is payback/defect.
+    \item $2$ is shirk/cooperate.
+    \item $3$ is payback/cooperate.
+\end{itemize}
+
+\begin{section}{Relationship between the PGG and the prisoner's dilemma}
+We begin by recapitulating the relationship between the PGG and a prisoner's dilemma (PD).
+In a PD, we have
+\end{section}\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        0 & \B \\
+        \C & \B - \C
+    \end{pmatrix}
+\end{equation}
+or, equivalently,
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        P & T \\
+        S & R,
+    \end{pmatrix}
+\end{equation}
+with $T > R > P > S$.
+(Note that these labels are opposite the usual labeling of a PD, because for us, the ``smaller'' index is defection.)
+In a pairwise PGG, we have
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        0 & \frac{r}{2} \\
+        \frac{r}{2} - 1 & r - 1
+    \end{pmatrix}.
+\end{equation}
+This allows us to write
+\begin{equation}
+    \begin{split}
+        \mathcal{B} & = \frac{r}{2}\\
+        \mathcal{C} & = 1 - \frac{r}{2}.
+    \end{split}
+\end{equation}
+We can also note that the PD condition $T > R > P > S$ implies
+\begin{equation}
+    \begin{split}
+        \mathcal{B} > \mathcal{B} - \mathcal{C} & > 0 > -\mathcal{C} \\
+        \therefore \mathcal{B} & > \mathcal{C} > 0 \\
+        \therefore r & > 2 - r > 0 \\
+        \therefore r & > 2 - r \\
+        \therefore 2r & > 2 \\
+        \therefore r & > 1, \text{and}\\
+        2 - r & > 0\\
+        \therefore -r & > -2\\
+        \therefore r & < 2.
+    \end{split}
+\end{equation}
+In other words, $2 > r > 1$ is the bare minimum needed for our game to even \emph{be} a prisoner's dilemma.
+Small wonder that, in simulations where $r > 2$, cooperation shoots through the roof.
+Derp.
+The $\mathcal{B}/\mathcal{C} > k$ condition implies
+\begin{equation}
+    \begin{split}
+        \frac{r}{2-r} & > k \\
+        \therefore r & > k(2-r) \\
+        \therefore r & > 2k - kr \\
+        \therefore r(k+1) & > 2k \\
+        \therefore r & > \frac{2k}{k+1}.
+    \end{split}
+\end{equation}
+We thus need $2 > 2k/(k+1)$ for cooperation to be possible, or equivalently
+\begin{equation}
+    \begin{split}
+        \frac{2k}{k+1} & < 2 \\
+        \therefore 2k & < 2k + 2 \\
+        \therefore 0 & < 2,
+    \end{split}
+\end{equation}
+which is a pretty easy condition to satisfy.
+
+\section{The PGG with lending}
+
+The payoff matrix for us in the case with $d = 0$ is
+\begin{equation}
+    a_{ij} =
+        \begin{pmatrix}
+        0 & \frac{r}{2} & 0 & \frac{r}{2} \\
+        -z & \frac{r}{2} - z & -z & \frac{r}{2} - z \\
+        \frac{r}{2} - 1 & \frac{r}{2} - 1 & r - 1 & r - 1 \\
+        \frac{r}{2} - 1 - z & \frac{r}{2} - 1 - z  & r - 1 - z & r - 1 - z
+    \end{pmatrix}.
+\end{equation}
+It is not entirely obvious what to conclude by looking at this, but we may be able to make some headway by considering the replicator dynamics.
+The replicator equation is
+\begin{equation}
+    \dot{x}_i = x_i (f_i + g_i - \phi),
+\end{equation}
+with
+\begin{equation}
+    \begin{split}
+        f_i & = \sum_j a_{ij} x_j,\\
+        g_i & = \sum_j b_{ij} x_j,\\
+        b_{ij} & = \frac{(k+1)a_{ii} + a_{ij} - a_{ji} - (k+1)a_{jj}}{(k+1)(k-2)}, \text{and}\\
+        \phi & = \sum_i x_i f_i.
+    \end{split}
+\end{equation}
+The $b_{ij}$ terms are correct for death-birth updating, which we are using.
+We can do the relevant algebra, filling in $b_{ij}$ first and ignoring the $\frac{1}{(k+1)(k-2)}$ prefactor:
+\begin{equation}
+    \begin{split}
+        b_{01} & = (k+1)a_{00} + a_{01} - a_{10} - (k+1)a_{11} = \frac{r}{2} + z - (k+1)(\frac{r}{2} - z) \\
+        b_{02} & = (k+1)a_{00} + a_{02} - a_{20} - (k+1)a_{22} = -(\frac{r}{2} - 1) - (k+1)(r-1)\\
+        b_{03} & = (k+1)a_{00} + a_{03} - a_{30} - (k+1)a_{33} = \frac{r}{2} - (\frac{r}{2} - 1 - z) - (k+1)(r - 1 - z) \\
+        b_{12} & = (k+1)a_{11} + a_{12} - a_{21} - (k+1)a_{22} = (k+1)(\frac{r}{2} - z) - (\frac{r}{2} - 1) - (k+1)(r-1)\\
+        b_{13} & = (k+1)a_{11} + a_{13} - a_{31} - (k+1)a_{33} = (k+1)(\frac{r}{2} - z) + \frac{r}{2} - (\frac{r}{2} - 1 - z) - (k+1)(r - 1 - z)\\
+        b_{23} & = (k+1)a_{22} + a_{23} - a_{32} - (k+1)a_{33} = (k+1)(r-1) + (r-1) - (r - 1 - z) - (k+1)(r - 1 - z),
+    \end{split}
+\end{equation}
+which is actually all that is needed to fill in $b_{ij}$, as the diagonal entries are zero and the opposite entries are negative.
+\begin{equation}
+    b_{ij} = \frac{1}{(k+1)(k-2)}
+    \begin{pmatrix}
+        ...
+    \end{pmatrix}.
+\end{equation}
+\begin{equation}
+    \begin{split}
+        f_0 & = \frac{r}{2} (x_1 + x_3),\\
+        f_1 & = -z (x_0 + x_2) + (\frac{r}{2} - z)(x_1 + x_3), \\
+        f_2 & = (\frac{r}{2} - 1) (x_0 + x_1) + (r-1) (x_2 + x_3), \\
+        f_3 & = (\frac{r}{2} - 1 - z)(x_0 + x_1) + (r - 1 - z)(x_2 + x_3).
+    \end{split}
+\end{equation}
+Next steps: simplify $b_{ij}$ and extend the matrix to incorporate $d > 0$.
+\end{document}
