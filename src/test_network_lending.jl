@@ -10,9 +10,10 @@ using NetworkLending
 using PyPlot
 
 N = 1000 # population size
-k = 100 # network degree
-r = 1.5 # synergy factor
+k = 4 # network degree
+r = 1.2 # synergy factor
 z = 1.0 # interest
+#z = 0.0
 d = 0.9 # decrement for bad actors
 w = 0.01 # selection strength
 
@@ -43,6 +44,8 @@ function strategy_label(
 	strat_string *= (strategy % 2 == 0 ? "shirk" : "payback")
 	return strat_string
 end
+
+colors = []
 
 fig = plt.figure()
 [plt.plot(ft.freqs[:,x], label=("$(strategy_label(x-1))")) for x in 1:4]

@@ -12,7 +12,7 @@ module NetworkLending
 
     export Network, NetworkGame, GameParams, NetworkPopulation
 	export FreqStats, FreqTraj
-    export evolve!, evolve_and_track!
+    export evolve!, evolve_and_track!, pair_PGG_payoffs
 
 	struct Network
 		# static type for storing the graph itself

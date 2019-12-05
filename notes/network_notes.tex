@@ -2,6 +2,7 @@
 
 \usepackage{amsfonts,latexsym,amsthm,amssymb,amsmath,amscd,euscript}
 \usepackage{fullpage}
+\usepackage[margin=0.5in]{geometry}
 \usepackage{hyperref}
 \usepackage{mathtools}
 \usepackage{charter}
@@ -113,7 +114,7 @@ The $\mathcal{B}/\mathcal{C} > k$ condition implies
         \therefore r & > \frac{2k}{k+1}.
     \end{split}
 \end{equation}
-We thus need $2 > 2k/(k+1)$ for cooperation to be possible, or equivalently
+We need $2 > 2k/(k+1)$ for cooperation to be possible, or equivalently
 \begin{equation}
     \begin{split}
         \frac{2k}{k+1} & < 2 \\
@@ -122,6 +123,8 @@ We thus need $2 > 2k/(k+1)$ for cooperation to be possible, or equivalently
     \end{split}
 \end{equation}
 which is a pretty easy condition to satisfy.
+For $k = 3$ we require $r > 1.5$, and for $k = 4$ we require $r > 1.6$.
+For a much higher value of $k$, say $10$, we need $r > 20/11 \approx 1.82$.
 
 \section{The PGG with lending}
 
@@ -129,12 +132,13 @@ The payoff matrix for us in the case with $d = 0$ is
 \begin{equation}
     a_{ij} =
         \begin{pmatrix}
-        0 & \frac{r}{2} & 0 & \frac{r}{2} \\
-        -z & \frac{r}{2} - z & -z & \frac{r}{2} - z \\
+        0 & 0 & \frac{r}{2} & \frac{r}{2} \\
+        -z & -z & \frac{r}{2} - z & \frac{r}{2} - z \\
         \frac{r}{2} - 1 & \frac{r}{2} - 1 & r - 1 & r - 1 \\
         \frac{r}{2} - 1 - z & \frac{r}{2} - 1 - z  & r - 1 - z & r - 1 - z
     \end{pmatrix}.
 \end{equation}
+(Somewhat embarrassingly, preparing the rest of this document convinced me that I had actually messed up the above payoff matrix.)
 It is not entirely obvious what to conclude by looking at this, but we may be able to make some headway by considering the replicator dynamics.
 The replicator equation is
 \begin{equation}
@@ -153,28 +157,167 @@ The $b_{ij}$ terms are correct for death-birth updating, which we are using.
 We can do the relevant algebra, filling in $b_{ij}$ first and ignoring the $\frac{1}{(k+1)(k-2)}$ prefactor:
 \begin{equation}
     \begin{split}
-        b_{01} & = (k+1)a_{00} + a_{01} - a_{10} - (k+1)a_{11} = \frac{r}{2} + z - (k+1)(\frac{r}{2} - z) \\
-        b_{02} & = (k+1)a_{00} + a_{02} - a_{20} - (k+1)a_{22} = -(\frac{r}{2} - 1) - (k+1)(r-1)\\
+        b_{01} & = (k+1)a_{00} + a_{01} - a_{10} - (k+1)a_{11} = z + (k+1)z \\
+        b_{02} & = (k+1)a_{00} + a_{02} - a_{20} - (k+1)a_{22} = \frac{r}{2} - (\frac{r}{2} - 1) - (k+1)(r-1)\\
         b_{03} & = (k+1)a_{00} + a_{03} - a_{30} - (k+1)a_{33} = \frac{r}{2} - (\frac{r}{2} - 1 - z) - (k+1)(r - 1 - z) \\
-        b_{12} & = (k+1)a_{11} + a_{12} - a_{21} - (k+1)a_{22} = (k+1)(\frac{r}{2} - z) - (\frac{r}{2} - 1) - (k+1)(r-1)\\
-        b_{13} & = (k+1)a_{11} + a_{13} - a_{31} - (k+1)a_{33} = (k+1)(\frac{r}{2} - z) + \frac{r}{2} - (\frac{r}{2} - 1 - z) - (k+1)(r - 1 - z)\\
+        b_{12} & = (k+1)a_{11} + a_{12} - a_{21} - (k+1)a_{22} = (k+1)(-z) + \frac{r}{2} - z - (\frac{r}{2} - 1) - (k+1)(r-1)\\
+        b_{13} & = (k+1)a_{11} + a_{13} - a_{31} - (k+1)a_{33} = (k+1)(-z) + \frac{r}{2} - z - (\frac{r}{2} - 1 - z) - (k+1)(r - 1 - z)\\
         b_{23} & = (k+1)a_{22} + a_{23} - a_{32} - (k+1)a_{33} = (k+1)(r-1) + (r-1) - (r - 1 - z) - (k+1)(r - 1 - z),
     \end{split}
 \end{equation}
-which is actually all that is needed to fill in $b_{ij}$, as the diagonal entries are zero and the opposite entries are negative.
+which is actually all that is needed to fill in $b_{ij}$, as $b_{ii} = 0 ~ \forall ~ i$ and $b_{ij} = -b_{ji}$ (the matrix is antisymmetric).
+A little simplification yields
 \begin{equation}
-    b_{ij} = \frac{1}{(k+1)(k-2)}
-    \begin{pmatrix}
-        ...
-    \end{pmatrix}.
+    \begin{split}
+        b_{01} & = z + (k+1)z \\
+        b_{02} & = 1 - (k+1)(r-1) \\
+        b_{03} & = 1 + z - (k+1)(r - 1 - z) \\
+        b_{12} & = (k+1)(-z) - z + 1 - (k+1)(r-1)\\
+        b_{13} & = (k+1)(-z) + 1 - (k+1)(r - 1 - z)\\
+        b_{23} & = (k+1)(r-1) + z - (k+1)(r - 1 - z).
+    \end{split}
+\end{equation}
+We thus have
+\begin{equation}
+    \begin{split}
+        f_i & =
+        \begin{pmatrix}
+            a_{00}x_0 + a_{01}x_1 + a_{02}x_2 + a_{03}x_3\\
+            a_{10}x_0 + a_{11}x_1 + a_{12}x_2 + a_{13}x_3\\
+            a_{20}x_0 + a_{21}x_1 + a_{22}x_2 + a_{23}x_3\\
+            a_{30}x_0 + a_{31}x_1 + a_{32}x_2 + a_{33}x_3
+        \end{pmatrix}
+        \\
+        & =
+        \begin{pmatrix}
+            \frac{r}{2}(x_2 + x_3)\\
+            \frac{r}{2}(x_2 + x_3) - z\\
+            (\frac{r}{2} - 1)(x_0 + x_1) + (r-1)(x_2 + x_3)\\
+            (\frac{r}{2} - 1 - z)(x_0 + x_1) + (r - 1 - z)(x_2 + x_3)
+        \end{pmatrix}
+        \\
+        & =
+        \begin{pmatrix}
+            \frac{r}{2}(x_2 + x_3)\\
+            \frac{r}{2}(x_2 + x_3) - z\\
+            \frac{r}{2}(x_0 + x_1) + \frac{r}{2} - 1\\
+            \frac{r}{2}(x_0 + x_1) + \frac{r}{2} - 1 - z
+        \end{pmatrix},
+    \end{split}
 \end{equation}
 \begin{equation}
     \begin{split}
-        f_0 & = \frac{r}{2} (x_1 + x_3),\\
-        f_1 & = -z (x_0 + x_2) + (\frac{r}{2} - z)(x_1 + x_3), \\
-        f_2 & = (\frac{r}{2} - 1) (x_0 + x_1) + (r-1) (x_2 + x_3), \\
-        f_3 & = (\frac{r}{2} - 1 - z)(x_0 + x_1) + (r - 1 - z)(x_2 + x_3).
+        g_i & = \frac{1}{(k+1)(k-2)}
+        \begin{pmatrix}
+            b_{00}x_0 + b_{01}x_1 + b_{02}x_2 + b_{03}x_3\\
+            b_{10}x_0 + b_{11}x_1 + b_{12}x_2 + b_{13}x_3\\
+            b_{20}x_0 + b_{21}x_1 + b_{22}x_2 + b_{23}x_3\\
+            b_{30}x_0 + b_{31}x_1 + b_{32}x_2 + b_{33}x_3
+        \end{pmatrix}
+        \\
+        & = \frac{1}{(k+1)(k-2)}
+        \begin{pmatrix}
+            b_{01}x_1 + b_{02}x_2 + b_{03}x_3\\
+            -b_{10}x_0 + b_{12}x_2 + b_{13}x_3\\
+            -b_{02}x_0 - b_{12}x_1 + b_{23}x_3\\
+            -b_{03}x_0 - b_{13}x_1 - b_{23}x_2
+        \end{pmatrix}
+        \\
+        & = \frac{1}{(k+1)(k-2)} \times
+        \\
+        &
+        \begin{pmatrix}
+            [z + (k+1)z]x_1 + [1 - (k+1)(r-1)]x_2 + [1 + z - (k+1)(r - 1 - z)]x_3\\
+            -[z + (k+1)z]x_0 + [(k+1)(-z) - z + 1 - (k+1)(r-1)]x_2 + [(k+1)(-z) + 1 - (k+1)(r - 1 - z)]x_3\\
+            -[1 - (k+1)(r-1)]x_0 - [(k+1)(-z) - z + 1 - (k+1)(r-1)]x_1 + [(k+1)(r-1) + z - (k+1)(r - 1 - z)]x_3\\
+            -[1 + z - (k+1)(r - 1 - z)]x_0 - [(k+1)(-z) + 1 - (k+1)(r - 1 - z)]x_1 - [(k+1)(r-1) + z - (k+1)(r - 1 - z)]x_2
+        \end{pmatrix},
     \end{split}
 \end{equation}
-Next steps: simplify $b_{ij}$ and extend the matrix to incorporate $d > 0$.
+and
+\begin{equation}
+    \begin{split}
+        \phi & = x_0[\frac{r}{2}(x_2 + x_3)] + x_1[\frac{r}{2}(x_2 + x_3) - z] + x_2[\frac{r}{2}(x_0 + x_1) + \frac{r}{2} - 1] + x_3[\frac{r}{2}(x_0 + x_1) + \frac{r}{2} - 1 - z]
+        \\
+        & = (x_0 + x_1)[\frac{r}{2}(x_2 + x_3)] + (x_2 + x_3)[\frac{r}{2}(x_0 + x_1) + \frac{r}{2} - 1] - (x_1 + x_3)z
+        \\
+        & = r(x_0 + x_1)(x_2 + x_3) + (x_2 + x_3)(\frac{r}{2} - 1) - (x_1 + x_3)z.
+    \end{split}
+    \label{eq:phi}
+\end{equation}
+The last line of equation \ref{eq:phi} has a straightforward interpretation: the average fitness depends on the product of the cooperator and defector frequencies, plus an additional term corresponding to cooperator frequency, minus the amount that gets paid back each generation.
+This looks like it's beyond my analytical ability, but we could certainly try to solve it numerically.
+
+In the case where individuals are given different endowments $v_i$ and $v_j$, the total amount of money in the pot is the sum of the two, so the payoff to individual $i$ is $r\frac{v_i + v_j}{2}$.
+The payoff matrix \emph{without lending} becomes
+\begin{equation}
+    a_{ij} =
+        \begin{pmatrix}
+            0 & r\frac{v_j}{2} \\
+            r\frac{v_i}{2} - v_i & r\frac{v_i + v_j}{2} - v_i
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            0 & r\frac{v_j}{2} \\
+            [\frac{r}{2} - 1] v_i & [\frac{r}{2} - 1]v_i + r\frac{v_j}{2}
+        \end{pmatrix}.
+\end{equation}
+(Without loss of generality, we could divide out by $v_i$ and reduce the number of parameters by one.)
+Note that, if individual $i$ receives $v_i$ from the bank, a payerback will have to pay $zv_i$.
+So the payoff matrix \emph{with lending} becomes
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        0 & 0 & r\frac{v_j}{2} & r\frac{v_j}{2} \\
+        -zv_i & -zv_i & r\frac{v_j}{2} - zv_i & r\frac{v_j}{2} - zv_i \\
+        r\frac{v_i}{2} - v_i & r\frac{v_i}{2} - v_i & r\frac{v_i + v_j}{2} - v_i & r\frac{v_i + v_j}{2} - v_i \\
+        r\frac{v_i}{2} - (z+1)v_i & r\frac{v_i}{2} - (z+1)v_i  & r\frac{v_i + v_j}{2} - (z+1)v_i & r\frac{v_i + v_j}{2} - (z+1)v_i
+    \end{pmatrix}.
+\end{equation}
+If we assume that reputations are updated \emph{instantly}, so that $v_i$ is $v$ for payersback (types $1$ and $3$) and $v(1-d)$ for shirkers (types $0$ and $2$), then the size of the pot is $2v$ for two payersback, $v(2-d)$ for one shirker, and $v(2 - 2d)$ for two shirkers, given that everyone cooperates.
+Put another way, the pot contributions are $0, 0, 1-d, 1$.
+We might want to define a ``pot matrix''
+\begin{equation}
+    p_{ij} =
+    \begin{pmatrix}
+        0 & 0 & 1-d & 1 \\
+        0 & 0 & 1-d & 1 \\
+        1-d & 1-d & 2-2d & 2-d \\
+        1 & 1 & 2-d & 2
+    \end{pmatrix},
+\end{equation}
+a ``payback matrix''
+\begin{equation}
+    l_{ij} =
+    \begin{pmatrix}
+        0 & 0 & 0 & 0 \\
+        1 & 1 & 1 & 1 \\
+        0 & 0 & 0 & 0 \\
+        1 & 1 & 1 & 1
+    \end{pmatrix},
+\end{equation}
+and an ``investment matrix''
+\begin{equation}
+    r_{ij} =
+    \begin{pmatrix}
+        0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 \\
+        1-d & 1-d & 1-d & 1-d \\
+        1 & 1 & 1 & 1
+    \end{pmatrix},
+\end{equation}
+so that the total payoff matrix becomes
+\begin{equation}
+    a_{ij} = v(\frac{r}{2} p_{ij} - r_{ij} - zl_{ij}).
+\end{equation}
+In this case, the payoff matrix is
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        0 & 0 & \frac{r}{2}(1-d) & \frac{r}{2} \\
+        -z & -z & \frac{r}{2}(1-d) -z & \frac{r}{2} -z \\
+        (\frac{r}{2} - 1)(1-d) & (\frac{r}{2} - 1)(1-d) & (r-1)(1-d)& \frac{r}{2}(2 - d) - (1-d)\\
+        \frac{r}{2} - 1 - z & \frac{r}{2} - 1 -z & \frac{r}{2}(2 - d) - 1 - z & r - 1 -z
+    \end{pmatrix}.
+\end{equation}
 \end{document}
