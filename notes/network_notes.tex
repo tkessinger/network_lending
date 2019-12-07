@@ -55,7 +55,7 @@ Strategies are labeled as follows:
 \begin{section}{Relationship between the PGG and the prisoner's dilemma}
 We begin by recapitulating the relationship between the PGG and a prisoner's dilemma (PD).
 In a PD, we have
-\end{section}\begin{equation}
+\begin{equation}
     a_{ij} =
     \begin{pmatrix}
         0 & \B \\
@@ -320,4 +320,173 @@ In this case, the payoff matrix is
         \frac{r}{2} - 1 - z & \frac{r}{2} - 1 -z & \frac{r}{2}(2 - d) - 1 - z & r - 1 -z
     \end{pmatrix}.
 \end{equation}
+
+Let's back up slightly and consider a ``basic'' prisoner's dilemma, with
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        0 & \frac{r}{2} \\
+        \frac{r}{2} - 1 & r - 1
+    \end{pmatrix}.
+\end{equation}
+We have
+\begin{equation}
+    \begin{split}
+        b_{ij} & =
+        \frac{(k+1)a_{ii} + a_{ij} - a_{ji} - (k+1)a_{jj}}{(k+1)(k-2)}
+        \\
+        & = \frac{1}{(k+1)(k-2)}
+        \begin{pmatrix}
+            0 & (k+1)a_{00} + a_{01} - a_{10} - (k+1)a_{11} \\
+            (k+1)a_{11} + a_{10} - a_{01} - (k+1)a_{00} & 0
+        \end{pmatrix}
+        \\
+        & = \frac{1}{(k+1)(k-2)}
+        \begin{pmatrix}
+            0 & 1 + (k+1)(r-1) \\
+            -1 - (k+1)(r-1) & 0
+        \end{pmatrix}.
+    \end{split}
+\end{equation}
+Thus
+\begin{equation}
+    \begin{split}
+        f_i & =
+        \begin{pmatrix}
+            a_{00}x_0 + a_{01}x_1 \\
+            a_{10}x_0 + a_{11}x_1
+        \end{pmatrix}
+        \\
+        & =
+        \begin{pmatrix}
+            \frac{r}{2}x_1 \\
+            (\frac{r}{2} - 1)x_0 + (r-1) x_1
+        \end{pmatrix}
+        \\
+        & =
+        \begin{pmatrix}
+            \frac{r}{2}x_1 \\
+            \frac{r}{2}x_0 + r x_1 - 1
+        \end{pmatrix}
+        \\
+        & =
+        \begin{pmatrix}
+            \frac{r}{2}x_1 \\
+            \frac{r}{2} x_1 + \frac{r}{2} - 1
+        \end{pmatrix},
+    \end{split}
+\end{equation}
+\begin{equation}
+    \begin{split}
+        g_i & = \frac{1}{(k+1)(k-2)}
+        \begin{pmatrix}
+            b_{00}x_0 + b_{01}x_1\\
+            b_{10}x_0 + b_{11}x_1
+        \end{pmatrix}
+        \\
+        & = \frac{1}{(k+1)(k-2)}
+        \begin{pmatrix}
+            [1 + (k+1)(r-1)]x_1\\
+            -[1 + (k+1)(r-1)]x_0
+        \end{pmatrix},
+    \end{split}
+\end{equation}
+and
+\begin{equation}
+    \begin{split}
+        \phi & = x_0 f_0 + x_1 f_1
+        \\
+        & = x_0 \frac{r}{2}x_1 + x_1[\frac{r}{2}x_0 + r x_1 - 1].
+    \end{split}
+\end{equation}
+We can thus write down
+\begin{equation}
+    \begin{split}
+        \dot{x}_0 & = x_0 \Big(\frac{r}{2}x_1 + \frac{1 + (k+1)(r-1)}{(k+1)(k-2)} x_1 - \frac{r}{2}x_0 x_1 - x_1[\frac{r}{2}x_0 + r x_1 - 1] \Big)
+        \\
+        & = x_0 \Big( \frac{r}{2}(1-x_0) + \frac{1 + (k+1)(r-1)}{(k+1)(k-2)} (1-x_0) - \frac{r}{2}x_0 (1-x_0) - (1-x_0)[\frac{r}{2}x_0 + r (1-x_0) - 1] \Big)
+    \end{split}
+\end{equation}
+and find that $\dot{x}_0 = 0$ when
+\begin{equation}
+    \begin{split}
+        0 & = \frac{r}{2}(1-x_0) + f(k,r) (1-x_0) - \frac{r}{2}x_0 (1-x_0) - (1-x_0)[\frac{r}{2}x_0 + r (1-x_0) - 1]
+        \\
+        & = \frac{r}{2} - \frac{r}{2}x_0 + f(k,r) - f(k,r)x_0 - \frac{r}{2}x_0 + \frac{r}{2} x_0^2 - \frac{r}{2}x_0 - r + r x_0 + 1 + \frac{r}{2}x_0^2 + r x_0 - r x_0^2 - x_0
+        \\
+        & = x_0^2 (\frac{r}{2} + \frac{r}{2} - r) + x_0 (-\frac{r}{2} - f(k,r) - \frac{r}{2} - \frac{r}{2} + r + r - 1) + (\frac{r}{2} + f(k,r) - r + 1)
+        \\
+        & = x_0 (-f(k,r) + \frac{r}{2} - 1) + (f(k,r) - \frac{r}{2} + 1)
+    \end{split}
+\end{equation}
+which sure looks like I made a mistake somewhere.
+Let's back up \emph{even further} and consider the \emph{real} basic PD:
+\begin{equation}
+    \begin{split}
+        a_{ij} & =
+        \begin{pmatrix}
+            0 & \B \\
+            \C & \B - \C
+        \end{pmatrix},
+        \\
+        b_{ij} & = \frac{1}{(k+1)(k-2)}
+        \begin{pmatrix}
+            0 & \B - \C - (k+1)(\B - \C) \\
+            - \B + \C + (k+1)(\B - \C) & 0
+        \end{pmatrix},
+        \\
+        & = \frac{1}{(k+1)(k-2)}
+        \begin{pmatrix}
+            0 & -k(\B - \C) \\
+            k(\B - \C) & 0
+        \end{pmatrix},
+        \\
+        f_i & =
+        \begin{pmatrix}
+            \B x_1 \\
+            \C x_0 + (\B - \C) x_1
+        \end{pmatrix}
+        \\
+        & =
+        \begin{pmatrix}
+            \B (1-x_0) \\
+            \C x_0 + (\B - \C) (1-x_0)
+        \end{pmatrix}
+        \\
+        & =
+        \begin{pmatrix}
+            -\B x_0 + \B \\
+            (-\B + 2\C) x_0 + \B - \C
+        \end{pmatrix},
+        \\
+        g_i & =
+        \begin{pmatrix}
+            \frac{-k(\B-\C)}{(k+1)(k-2)} (1-x_0) \\
+            \frac{k(\B-\C)}{(k+1)(k-2)} x_0
+        \end{pmatrix},
+        \\
+        \phi & = x_0 [\B(1 - x_0)] + (1 - x_0)[(-\B + 2\C) x_0 + \B - \C].
+    \end{split}
+\end{equation}
+Thus,
+\begin{equation}
+    \begin{split}
+        \dot{x}_0 & = x_0 \Big(\B (1 - x_0) - \frac{k (\B - \C)}{(k+1)(k-2)}(1 - x_0) - x_0[\B(1 - x_0)] + (1 - x_0)[(-\B + 2\C) x_0 + \B - \C] \Big)
+        \\
+        & = x_0 \Big(\B (1 - x_0) - \frac{k (\B - \C)}{(k+1)(k-2)}(1 - x_0) + [-\B x_0 + \B x_0^2] + [-\B x_0 + 2\C x_0 + \B - \C + \B x_0^2 - 2\C x_0^2 - \B x_0 + \C x_0]
+        \\
+        & = x_0 \Big( \B - \B x_0 - \frac{k (\B - \C)}{(k+1)(k-2)}(1 - x_0) + [-\B x_0 + \B x_0^2] + [-\B x_0 + 2\C x_0 + \B - \C + \B x_0^2 - 2\C x_0^2 - \B x_0 + \C x_0]
+        \\
+        & = x_0 \Big( \B - \B x_0 - \frac{k (\B - \C)}{(k+1)(k-2)}(1 - x_0) + [-\B x_0 + \B x_0^2] + [-\B x_0 + 2\C x_0 + \B - \C + \B x_0^2 - 2\C x_0^2 - \B x_0 + \C x_0]
+    \end{split}
+\end{equation}
+or, equivalently,
+\begin{equation}
+    \begin{split}
+        \dot{x}_1 & = x_1 \Big(\C x_1 - [\B - \C] (1 - x_1) + \frac{k (\B - \C)}{(k+1)(k-2)}(1 - x_1) - (1 - x_1)[\B x_1] + x_1[(-\B + 2\C) (1 - x_1) + \B - \C] \Big)
+        \\
+
+    \end{split}
+\end{equation}
+\end{section}
 \end{document}

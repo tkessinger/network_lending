@@ -10,12 +10,6 @@ using NetworkLending
 using PyPlot
 using DifferentialEquations
 
-k = 4 # network degree
-r = 1.2 # synergy factor
-z = 1.0 # interest
-d = 0.9 # decrement for bad actors
-w = 0.01 # selection strength
-
 function a_matrix(
 	r::Float64,
 	z::Float64,
@@ -28,6 +22,27 @@ function a_matrix(
 			a[i+1,j+1] = pair_PGG_payoffs([i, j], [i%2, j%2], gp)[1]
 		end
 	end
+	return a
+end
+
+function a_matrix_long_version(
+	r::Float64,
+	z::Float64,
+	d::Float64
+	)
+	p = [0 0 1-d 1;
+		0 0 1-d 1;
+		1-d 1-d 2-2d 2-d;
+		1 1 2-d 2]
+	l = [0 0 0 0;
+		1 1 1 1;
+		0 0 0 0;
+		1 1 1 1]
+	R = [0 0 0 0;
+		0 0 0 0;
+		1-d 1-d 1-d 1-d;
+		1 1 1 1]
+	a = (r/2*p - R - z*l + ones(4,4))
 	return a
 end
 
@@ -72,8 +87,10 @@ function dot_x!(
 	#println(dx)
 end
 
-r_vals = collect(1:0.2:2)
-z_vals = collect(0:0.3:1.5)
+k = 6 # network degree
+w = 0.01 # selection strength
+r_vals = collect(1:0.01:2)
+z_vals = collect(0:0.02:2)
 d = 0.9
 payback_freq = zeros(Float64, length(r_vals), length(z_vals))
 coop_freq = zeros(Float64, length(r_vals), length(z_vals))
@@ -83,7 +100,7 @@ for (ri, r) in enumerate(r_vals)
 		gp = GameParams(r, z, d)
 		p = NOParams(gp, k)
 		x0 = [0.25; 0.25; 0.25; 0.25]
-		tspan = (0.0,1000.0)
+		tspan = (0.0,10000.0)
 		prob = ODEProblem(dot_x!, x0, tspan, p)
 		sol = solve(prob)
 		results[ri, zi, :] = sol.u[end]
@@ -92,17 +109,47 @@ for (ri, r) in enumerate(r_vals)
 	end
 end
 
-fig = plt.figure()
-plt.imshow(results[:,:,1])
-display(fig)
+zmin, zmax, rmin, rmax = z_vals[1], z_vals[end], r_vals[1], r_vals[end]
+scaling = (zmax-zmin)/(rmax-rmin)
 
 fig = plt.figure()
-plt.imshow(coop_freq[:,:,1])
-plt.title("coop")
+plt.imshow(coop_freq, origin="lower",
+	extent = [zmin, zmax, rmin, rmax], aspect = scaling)
+plt.xlabel(L"z")
+plt.ylabel(L"r")
+plt.title("coop frequency, k = $k, d = $d")
 plt.colorbar()
+plt.tight_layout()
 display(fig)
+plt.savefig("figures/coop_frequency_k_$(k)_d_$(d).pdf")
+
 fig = plt.figure()
-plt.imshow(payback_freq[:,:,1])
-plt.title("payback")
+plt.imshow(payback_freq, origin="lower",
+	extent = [zmin, zmax, rmin, rmax], aspect = scaling)
+plt.xlabel(L"z")
+plt.ylabel(L"r")
+plt.title("payback frequency, k = $k, d = $d")
 plt.colorbar()
+plt.tight_layout()
 display(fig)
+plt.savefig("figures/payback_frequency_k_$(k)_d_$(d).pdf")
+
+fig, axs = plt.subplots(2,2, sharey="col", sharex="row",
+	figsize = (8,8))
+
+for i in 1:4
+	ax = axs[i]
+	im = ax.imshow(results[:,:,i], origin="lower",
+		extent = [zmin, zmax, rmin, rmax], aspect=scaling)
+	if i ∈ [2, 4]
+		ax.set_xlabel(L"z")
+	end
+	if i ∈ [1, 2]
+		ax.set_ylabel(L"r")
+	end
+	ax.set_title("frequency of type $(i-1)")
+end
+fig.suptitle("type frequencies, k = $k, d = $d")
+fig.tight_layout(rect=[0, 0.03, 1, 0.96])
+display(fig)
+plt.savefig("figures/type_freqs_k_$(k)_d_$(d).pdf")
