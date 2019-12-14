@@ -11,11 +11,11 @@ using PyPlot
 
 N = 1000 # population size
 k = 4 # network degree
-r = 1.2 # synergy factor
-z = 1.0 # interest
+r = 1.6 # synergy factor
+z = 0.0 # interest
 #z = 0.0
 d = 0.9 # decrement for bad actors
-w = 0.01 # selection strength
+w = 0.05 # selection strength
 
 good_reputations = [1, 3]
 
@@ -30,9 +30,11 @@ pop = NetworkPopulation(network, game)
 # initialize the frequency trajectories
 ft = FreqTraj(pop)
 
-for i in 1:N
-	evolve_and_track!(pop, ft)
-end
+# for i in 1:10*N
+# 	evolve_and_track!(pop, ft)
+# end
+
+evolve_and_track_until_fixation!(pop, ft)
 
 function strategy_label(
 	strategy::Int64

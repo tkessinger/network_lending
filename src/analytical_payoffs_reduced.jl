@@ -13,6 +13,7 @@ using DifferentialEquations
 function a_matrix(
 	r::Float64,
 	)
+	# populate the matrix a_{ij} (payoff matrix)
 	a = [0 r/2;
 	r/2-1 r-1]
 	return a
@@ -22,6 +23,7 @@ function b_matrix(
 	a::Array{Float64, 2},
 	k::Int64
 	)
+	# populate the matrix b_{ij} (Nowak-Ohtsuki transform matrix)
 	b = zeros(Float64, size(a))
 	for i in 1:size(b)[1]
 		for j in 1:size(b)[2]

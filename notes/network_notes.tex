@@ -59,7 +59,7 @@ In a PD, we have
     a_{ij} =
     \begin{pmatrix}
         0 & \B \\
-        \C & \B - \C
+        -\C & \B - \C
     \end{pmatrix}
 \end{equation}
 or, equivalently,
@@ -309,6 +309,7 @@ and an ``investment matrix''
 so that the total payoff matrix becomes
 \begin{equation}
     a_{ij} = v(\frac{r}{2} p_{ij} - r_{ij} - zl_{ij}).
+    \label{eq:long_version}
 \end{equation}
 In this case, the payoff matrix is
 \begin{equation}
@@ -321,7 +322,100 @@ In this case, the payoff matrix is
     \end{pmatrix}.
 \end{equation}
 
-Let's back up slightly and consider a ``basic'' prisoner's dilemma, with
+
+Let's back up and consider the basic PD:
+\begin{equation}
+    \begin{split}
+        a_{ij} & =
+        \begin{pmatrix}
+            0 & \B \\
+            - \C & \B - \C
+        \end{pmatrix},
+        \\
+        b_{ij} & =
+        \frac{(k+1)a_{ii} + a_{ij} - a_{ji} - (k+1)a_{jj}}{(k+1)(k-2)}
+        \\
+        & = \frac{1}{(k+1)(k-2)}
+        \begin{pmatrix}
+            0 & (k+1)a_{00} + a_{01} - a_{10} - (k+1)a_{11} \\
+            (k+1)a_{11} + a_{10} - a_{01} - (k+1)a_{00} & 0
+        \end{pmatrix}
+        \\
+        & = \frac{1}{(k+1)(k-2)}
+        \begin{pmatrix}
+            0 & \B + \C - (k+1)(\B - \C) \\
+            - \B - \C + (k+1)(\B - \C) & 0
+        \end{pmatrix},
+        \\
+        & = \frac{1}{(k+1)(k-2)}
+        \begin{pmatrix}
+            0 & -k \B + (k+2) \C \\
+            k \B - (k+2) \C & 0
+        \end{pmatrix},
+        \\
+        f_i & =
+        \begin{pmatrix}
+            \B x_1 \\
+            - \C x_0 + (\B - \C) x_1
+        \end{pmatrix},
+        \\
+        g_i & =
+        \begin{pmatrix}
+            \frac{-k \B + (k+2) \C}{(k+1)(k-2)} x_1 \\
+            \frac{k \B - (k+2) \C}{(k+1)(k-2)} x_0
+        \end{pmatrix},
+        \\
+        \phi & = x_0 (\B x_1) + x_1 [-\C x_0 + (\B - \C) x_1].
+    \end{split}
+\end{equation}
+Ohtsuki claims the replicator equation is given by
+\begin{equation}
+    \dot{x} = x(1-x)\frac{k}{(k+1)(k-2)}(\B - k\C),
+\end{equation}
+where his $x$ is our $x_1$.
+Let's see.
+In a well mixed population, the replicator equation is simply
+\begin{equation}
+    \begin{split}
+        \dot{x} & = x[f_1 - \phi]
+        \\
+        & = x[-\C (1-x) + (\B - \C)x - (1-x) \B x - x\{ -\C(1-x) + (\B - \C) x \} ]
+        \\
+        \therefore \frac{\dot{x}}{x} & = -\C (1-x) + (\B - \C)x - (1-x) \B x - x\{ -\C(1-x) + (\B - \C) x \}
+        \\
+        & = -\C + \C x + \B x - \C x - \B x + \B x^2 + \C x - \C x^2 - \B x^2 + \C x^2
+        \\
+        & = -\C + \C x
+        \\
+        & = -\C (1 - x)
+        \\
+        \therefore \dot{x} & = -\C x (1-x).
+    \end{split}
+\end{equation}
+In the spatial case, we instead have
+\begin{equation}
+    \begin{split}
+        \dot{x} & = x(f_1 + g_1 - \phi)
+        \\
+        & = x[-\C (1 - x) + (1-x)\frac{k \B - (k+2) \C}{(k+1)(k-2)}]
+        \\
+        & = x(1-x)[-\C + \frac{k \B - (k+2) \C}{(k+1)(k-2)}]
+        \\
+        & = x(1-x)[\frac{k \B + \{-(k+1)(k-2) - (k+2)\}\C}{(k+1)(k-2)}]
+        \\
+        & = x(1-x)[\frac{k \B + \{-k^2 + k + 2 - k - 2\}\C}{(k+1)(k-2)}]
+        \\
+        & = x(1-x)[\frac{k \B - k^2\C}{(k+1)(k-2)}]
+        \\
+        \therefore \dot{x} & = x(1-x) \frac{k}{(k+1)(k-2)}(\B - k\C). \qed
+    \end{split}
+\end{equation}
+Okay, good, I haven't somehow broken math.
+Observe that this has equilibria at $x = 0$ and $x = 1$.
+In general, the $x = 1$ solution is stable given that $\B/\C > k$.
+Otherwise, the $x = 0$ solution is stable.
+
+Let's make sure we can do the same thing with our formulation of the PD:
 \begin{equation}
     a_{ij} =
     \begin{pmatrix}
@@ -343,8 +437,8 @@ We have
         \\
         & = \frac{1}{(k+1)(k-2)}
         \begin{pmatrix}
-            0 & 1 + (k+1)(r-1) \\
-            -1 - (k+1)(r-1) & 0
+            0 & 1 - (k+1)(r-1) \\
+            -1 + (k+1)(r-1) & 0
         \end{pmatrix}.
     \end{split}
 \end{equation}
@@ -361,23 +455,8 @@ Thus
         \begin{pmatrix}
             \frac{r}{2}x_1 \\
             (\frac{r}{2} - 1)x_0 + (r-1) x_1
-        \end{pmatrix}
-        \\
-        & =
-        \begin{pmatrix}
-            \frac{r}{2}x_1 \\
-            \frac{r}{2}x_0 + r x_1 - 1
-        \end{pmatrix}
-        \\
-        & =
-        \begin{pmatrix}
-            \frac{r}{2}x_1 \\
-            \frac{r}{2} x_1 + \frac{r}{2} - 1
         \end{pmatrix},
-    \end{split}
-\end{equation}
-\begin{equation}
-    \begin{split}
+        \\
         g_i & = \frac{1}{(k+1)(k-2)}
         \begin{pmatrix}
             b_{00}x_0 + b_{01}x_1\\
@@ -386,106 +465,91 @@ Thus
         \\
         & = \frac{1}{(k+1)(k-2)}
         \begin{pmatrix}
-            [1 + (k+1)(r-1)]x_1\\
-            -[1 + (k+1)(r-1)]x_0
+            [1 - (k+1)(r-1)]x_1\\
+            [-1 + (k+1)(r-1)]x_0
         \end{pmatrix},
-    \end{split}
-\end{equation}
-and
-\begin{equation}
-    \begin{split}
+        \\
         \phi & = x_0 f_0 + x_1 f_1
         \\
-        & = x_0 \frac{r}{2}x_1 + x_1[\frac{r}{2}x_0 + r x_1 - 1].
+        & = x_0 \frac{r}{2}x_1 + x_1[(\frac{r}{2} - 1)x_0 + (r-1) x_1].
     \end{split}
 \end{equation}
-We can thus write down
+We can thus write down (using $x = x_1$)
 \begin{equation}
     \begin{split}
-        \dot{x}_0 & = x_0 \Big(\frac{r}{2}x_1 + \frac{1 + (k+1)(r-1)}{(k+1)(k-2)} x_1 - \frac{r}{2}x_0 x_1 - x_1[\frac{r}{2}x_0 + r x_1 - 1] \Big)
+        \dot{x} & = x [(\frac{r}{2} - 1) (1 - x) + (r-1)x - \frac{r}{2}x(1 - x) - x\{(\frac{r}{2} - 1)(1-x) + (r-1)x\} + \frac{(k+1)(r-1) - 1}{(k+1)(k-2)}(1-x)]
         \\
-        & = x_0 \Big( \frac{r}{2}(1-x_0) + \frac{1 + (k+1)(r-1)}{(k+1)(k-2)} (1-x_0) - \frac{r}{2}x_0 (1-x_0) - (1-x_0)[\frac{r}{2}x_0 + r (1-x_0) - 1] \Big)
+        \therefore \frac{\dot{x}}{x} & = \frac{r}{2} - \frac{r}{2}x - 1 + x + rx - x - \frac{r}{2}(x - x^2) - \frac{r}{2}x + \frac{r}{2}x^2 + x - x^2 - rx^2 + x^2 + \frac{(k+1)(r-1) - 1}{(k+1)(k-2)}(1-x)
+        \\
+        & = \frac{r}{2} - \frac{r}{2}x - 1 + x + rx - x - \frac{r}{2} x + \frac{r}{2}x^2 - \frac{r}{2}x + \frac{r}{2}x^2 + x - x^2 - rx^2 + x^2 + \frac{(k+1)(r-1) - 1}{(k+1)(k-2)}(1-x)
+        \\
+        & = \frac{r}{2}-1 + x(1-\frac{r}{2}) + \frac{(k+1)(r-1) - 1}{(k+1)(k-2)}(1-x)
+        \\
+        & = (\frac{r}{2}-1)(1-x) + \frac{(k+1)(r-1) - 1}{(k+1)(k-2)}(1-x)
+        \\
+        & = (1-x) \frac{(\frac{r}{2}-1)(k+1)(k-2) + (k+1)(r-1) - 1}{(k+1)(k-2)}
+        \\
+        & = (1-x) \frac{(\frac{r}{2}-1)(k^2 - k - 2) + (k+1)(r-1) - 1}{(k+1)(k-2)}
+        \\
+        & = (1-x) \frac{(\frac{r}{2})(k^2 - k - 2) + (k+1)r - (k^2 - k + 2) - (k+1) - 1}{(k+1)(k-2)}
+        \\
+        & = (1-x) \frac{(\frac{r}{2})(k^2 + k) - k^2}{(k+1)(k-2)}
+        \\
+        & = (1-x) k\frac{(\frac{r}{2})(k + 1) - k}{(k+1)(k-2)}
+        \\
+        \therefore \dot{x} & = x(1-x) \frac{k}{(k+1)(k-2)}(\B - k\C). \qed
     \end{split}
 \end{equation}
-and find that $\dot{x}_0 = 0$ when
+Let's return to equation \ref{eq:long_version}:
+\begin{equation}
+    a_{ij} = v(\frac{r}{2} p_{ij} - r_{ij} - zl_{ij})
+\end{equation}
+We can write down
 \begin{equation}
     \begin{split}
-        0 & = \frac{r}{2}(1-x_0) + f(k,r) (1-x_0) - \frac{r}{2}x_0 (1-x_0) - (1-x_0)[\frac{r}{2}x_0 + r (1-x_0) - 1]
+        b_{ij} & = \frac{(k+1)(a_{ii} - a_{jj}) + a_{ij} - a_{ji}}{(k+1)(k-2)}
         \\
-        & = \frac{r}{2} - \frac{r}{2}x_0 + f(k,r) - f(k,r)x_0 - \frac{r}{2}x_0 + \frac{r}{2} x_0^2 - \frac{r}{2}x_0 - r + r x_0 + 1 + \frac{r}{2}x_0^2 + r x_0 - r x_0^2 - x_0
+        & = \frac{v}{(k+1)(k-2)} \times
         \\
-        & = x_0^2 (\frac{r}{2} + \frac{r}{2} - r) + x_0 (-\frac{r}{2} - f(k,r) - \frac{r}{2} - \frac{r}{2} + r + r - 1) + (\frac{r}{2} + f(k,r) - r + 1)
+        \Big\{ & \frac{r}{2} [(k+1)(p_{ii} - p_{jj}) + p_{ij} - p_{ji}]
         \\
-        & = x_0 (-f(k,r) + \frac{r}{2} - 1) + (f(k,r) - \frac{r}{2} + 1)
+        & - [(k+1)(r_{ii} - r_{jj}) + r_{ij} - r_{ji}]
+        \\
+        & - z[(k+1)(l_{ii} - l_{jj}) + l_{ij} - l_{ji}] \Big\}.
     \end{split}
 \end{equation}
-which sure looks like I made a mistake somewhere.
-Let's back up \emph{even further} and consider the \emph{real} basic PD:
+Another way to proceed would be to write down
+\begin{equation}
+    \mathbf{A}^\prime = \mathbf{A} + \frac{1}{k-2} (\Delta \vec{1}^T - \vec{1} \Delta^T) + \frac{1}{(k+1)(k-2)}(\mathbf{A} - \mathbf{A}^T),
+\end{equation}
+with $\Delta$ the diagonal of $\mathbb{A}$.
+I think I'll proceed with the top version for now.
+The transformation yields
 \begin{equation}
     \begin{split}
-        a_{ij} & =
+        p^\prime_{ij} &=
         \begin{pmatrix}
-            0 & \B \\
-            \C & \B - \C
+            0 & 0 & -(k+1)(2 - 2d) & -2(k+1) \\
+            0 & 0 & -(k+1)(2 - 2d) & -2(k+1) \\
+            (k+1)(2 - 2d) & (k+1)(2 - 2d) & 0 & (k+1)(- 2d) \\
+            2(k+1) & 2(k+1) & (k+1)(2d) & 0
         \end{pmatrix},
         \\
-        b_{ij} & = \frac{1}{(k+1)(k-2)}
+        l^\prime_{ij} & =
         \begin{pmatrix}
-            0 & \B - \C - (k+1)(\B - \C) \\
-            - \B + \C + (k+1)(\B - \C) & 0
-        \end{pmatrix},
-        \\
-        & = \frac{1}{(k+1)(k-2)}
-        \begin{pmatrix}
-            0 & -k(\B - \C) \\
-            k(\B - \C) & 0
-        \end{pmatrix},
-        \\
-        f_i & =
-        \begin{pmatrix}
-            \B x_1 \\
-            \C x_0 + (\B - \C) x_1
+            0 & -(k+1) & 0 & -(k+1) \\
+            0 & 0 & (k+1) + 1 & 0 \\
+            0 & 0 & 0 & -1 - (k+1) \\
+            0 & 0 & 0 & 0
         \end{pmatrix}
         \\
-        & =
+        r^\prime_{ij} & =
         \begin{pmatrix}
-            \B (1-x_0) \\
-            \C x_0 + (\B - \C) (1-x_0)
-        \end{pmatrix}
-        \\
-        & =
-        \begin{pmatrix}
-            -\B x_0 + \B \\
-            (-\B + 2\C) x_0 + \B - \C
-        \end{pmatrix},
-        \\
-        g_i & =
-        \begin{pmatrix}
-            \frac{-k(\B-\C)}{(k+1)(k-2)} (1-x_0) \\
-            \frac{k(\B-\C)}{(k+1)(k-2)} x_0
-        \end{pmatrix},
-        \\
-        \phi & = x_0 [\B(1 - x_0)] + (1 - x_0)[(-\B + 2\C) x_0 + \B - \C].
-    \end{split}
-\end{equation}
-Thus,
-\begin{equation}
-    \begin{split}
-        \dot{x}_0 & = x_0 \Big(\B (1 - x_0) - \frac{k (\B - \C)}{(k+1)(k-2)}(1 - x_0) - x_0[\B(1 - x_0)] + (1 - x_0)[(-\B + 2\C) x_0 + \B - \C] \Big)
-        \\
-        & = x_0 \Big(\B (1 - x_0) - \frac{k (\B - \C)}{(k+1)(k-2)}(1 - x_0) + [-\B x_0 + \B x_0^2] + [-\B x_0 + 2\C x_0 + \B - \C + \B x_0^2 - 2\C x_0^2 - \B x_0 + \C x_0]
-        \\
-        & = x_0 \Big( \B - \B x_0 - \frac{k (\B - \C)}{(k+1)(k-2)}(1 - x_0) + [-\B x_0 + \B x_0^2] + [-\B x_0 + 2\C x_0 + \B - \C + \B x_0^2 - 2\C x_0^2 - \B x_0 + \C x_0]
-        \\
-        & = x_0 \Big( \B - \B x_0 - \frac{k (\B - \C)}{(k+1)(k-2)}(1 - x_0) + [-\B x_0 + \B x_0^2] + [-\B x_0 + 2\C x_0 + \B - \C + \B x_0^2 - 2\C x_0^2 - \B x_0 + \C x_0]
-    \end{split}
-\end{equation}
-or, equivalently,
-\begin{equation}
-    \begin{split}
-        \dot{x}_1 & = x_1 \Big(\C x_1 - [\B - \C] (1 - x_1) + \frac{k (\B - \C)}{(k+1)(k-2)}(1 - x_1) - (1 - x_1)[\B x_1] + x_1[(-\B + 2\C) (1 - x_1) + \B - \C] \Big)
-        \\
-
+            0 & 0 & -(1-d) - (k+1)(1-d) & -1 - (k+1) \\
+            0 & 0 & -(1 - d) - (k+1)(1-d) & -1 - (k+1) \\
+            (1-d) + (k+1)(1-d) & (1-d) + (k+1)(1-d) & 0 & (k+1)(1-d - 1) + (1-d - 1) \\
+            1 + (k+1) & 1 + (k+1) & -(k+1)(1-d - 1) - (1-d - 1) & 0
+        \end{pmatrix}.
     \end{split}
 \end{equation}
 \end{section}

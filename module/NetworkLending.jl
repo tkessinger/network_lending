@@ -12,7 +12,8 @@ module NetworkLending
 
     export Network, NetworkGame, GameParams, NetworkPopulation
 	export FreqStats, FreqTraj
-    export evolve!, evolve_and_track!, pair_PGG_payoffs
+    export evolve!, evolve_and_track!, evolve_and_track_until_fixation!
+	export pair_PGG_payoffs
 
 	struct Network
 		# static type for storing the graph itself
@@ -227,7 +228,7 @@ module NetworkLending
 		)
 		# initializes a population with random strategies
 		# if n strategies are assigned,
-		# then about N/n individuals will have each strategy
+		# then N/n individuals will have each strategy
 		strategies = zeros(Int64, n)
 		permutation = randperm(n)
 		g = length(strategy_set)
@@ -401,7 +402,7 @@ module NetworkLending
         PGG_pot = r*(sum([coop[i]*money[i] for i in 1:2]))
 
 		# determine payoffs
-		payoffs = [PGG_pot/2 + (1.0-coop[i])*money[i] for i in 1:2]
+		payoffs = [PGG_pot/2 + (-coop[i])*money[i] for i in 1:2]
 
 		# subtract out loan repayment, if applicable
         [payoffs[i] -= loan[i]*z*payback[i] for i in 1:2]
@@ -441,6 +442,15 @@ module NetworkLending
 		# and updates the frequency trajectories
 		evolve!(pop, pop.network.N)
 		track_freqs!(pop, ft)
+	end
+
+	function evolve_and_track_until_fixation!(
+		pop::NetworkPopulation,
+		ft::FreqTraj
+		)
+		while !any([freq == 1.0 for freq in ft.freqs[end,:]])
+			evolve_and_track!(pop, ft)
+		end
 	end
 
 # final end statement to close the module

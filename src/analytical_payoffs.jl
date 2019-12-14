@@ -42,7 +42,7 @@ function a_matrix_long_version(
 		0 0 0 0;
 		1-d 1-d 1-d 1-d;
 		1 1 1 1]
-	a = (r/2*p - R - z*l + ones(4,4))
+	a = (r/2*p - R - z*l)
 	return a
 end
 
@@ -87,11 +87,12 @@ function dot_x!(
 	#println(dx)
 end
 
-k = 6 # network degree
+k = 4 # network degree
 w = 0.01 # selection strength
-r_vals = collect(1:0.01:2)
-z_vals = collect(0:0.02:2)
+r_vals = collect(1:0.1:2)
+z_vals = collect(0:0.2:2)
 d = 0.9
+
 payback_freq = zeros(Float64, length(r_vals), length(z_vals))
 coop_freq = zeros(Float64, length(r_vals), length(z_vals))
 results = zeros(Float64, length(r_vals), length(z_vals), 4)
@@ -112,6 +113,8 @@ end
 zmin, zmax, rmin, rmax = z_vals[1], z_vals[end], r_vals[1], r_vals[end]
 scaling = (zmax-zmin)/(rmax-rmin)
 
+savefig = false
+
 fig = plt.figure()
 plt.imshow(coop_freq, origin="lower",
 	extent = [zmin, zmax, rmin, rmax], aspect = scaling)
@@ -121,7 +124,9 @@ plt.title("coop frequency, k = $k, d = $d")
 plt.colorbar()
 plt.tight_layout()
 display(fig)
-plt.savefig("figures/coop_frequency_k_$(k)_d_$(d).pdf")
+if savefig
+	plt.savefig("figures/new_coop_frequency_k_$(k)_d_$(d).pdf")
+end
 
 fig = plt.figure()
 plt.imshow(payback_freq, origin="lower",
@@ -132,7 +137,9 @@ plt.title("payback frequency, k = $k, d = $d")
 plt.colorbar()
 plt.tight_layout()
 display(fig)
-plt.savefig("figures/payback_frequency_k_$(k)_d_$(d).pdf")
+if savefig
+	plt.savefig("figures/new_payback_frequency_k_$(k)_d_$(d).pdf")
+end
 
 fig, axs = plt.subplots(2,2, sharey="col", sharex="row",
 	figsize = (8,8))
@@ -152,4 +159,6 @@ end
 fig.suptitle("type frequencies, k = $k, d = $d")
 fig.tight_layout(rect=[0, 0.03, 1, 0.96])
 display(fig)
-plt.savefig("figures/type_freqs_k_$(k)_d_$(d).pdf")
+if savefig
+	plt.savefig("figures/new_type_freqs_k_$(k)_d_$(d).pdf")
+end

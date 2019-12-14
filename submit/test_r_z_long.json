@@ -1,0 +1,56 @@
+{
+  "N":
+  {
+    "value": 200
+  },
+  "k":
+  {
+    "value": [3, 4, 5]
+  },
+  "r":
+  {
+    "range":
+    {
+      "start": 1.0,
+      "stop": 2.0,
+      "length": 21
+    }
+  },
+  "z":
+  {
+    "range":
+    {
+      "start": 0.0,
+      "stop": 2.0,
+      "length": 21
+    }
+  },
+  "d":
+  {
+    "value": [0.0, 0.5, 0.9, 1.0]
+  },
+  "w":
+  {
+    "value": 0.05
+  },
+  "num_trials":
+  {
+    "value": 10
+  },
+  "num_gens":
+  {
+    "value": 2000
+  },
+  "gen_cutoff":
+  {
+    "value": 100
+  },
+  "good_reputations":
+  {
+    "value": "payback"
+  },
+  "output":
+  {
+    "value": "output/test_lending_long.csv"
+  }
+}

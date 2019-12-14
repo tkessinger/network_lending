@@ -1,0 +1,48 @@
+{
+  "N":
+  {
+    "value": 1000
+  },
+  "k":
+  {
+    "value": [3, 4, 5]
+  },
+  "r":
+  {
+    "range":
+    {
+      "start": 1.0,
+      "stop": 2.0,
+      "length": 11
+    }
+  },
+  "z":
+  {
+    "range":
+    {
+      "start": 0.0,
+      "stop": 2.0,
+      "length": 11
+    }
+  },
+  "d":
+  {
+    "value": [0.0, 0.5, 0.9, 1.0]
+  },
+  "w":
+  {
+    "value": 0.01
+  },
+  "num_trials":
+  {
+    "value": 10
+  },
+  "good_reputations":
+  {
+    "value": "payback"
+  },
+  "output":
+  {
+    "value": "output/test_lending_fixation.csv"
+  }
+}
