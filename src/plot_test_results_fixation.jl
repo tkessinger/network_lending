@@ -6,7 +6,7 @@
 ## Plot results from NetworkLending simulations.
 ## Look at dependence of type frequencies on r and z.
 
-using CSV, PyPlot, Statistics, NetworkLending
+using CSV, PyPlot, Statistics, NetworkLending, JSON
 
 # load simulation output as a dataframe
 runs = CSV.read("output/test_lending_fixation.csv")
@@ -38,7 +38,9 @@ for (pi, param_comb) in enumerate(param_combs)
     tmp_runs = runs[(runs[:k] .== k) .& (runs[:z] .== z) .& (runs[:d] .== d) .& (runs[:r] .== r), :]
     for (ri, run) in enumerate(eachrow(tmp_runs[:,:]))
         fixation_times[param_comb] += 1.0*run[:generations]/size(tmp_runs, 1)
-        freqs = parse.(Float64,String.(split(run[:mean_freqs], r";|,| |\[|\]")[2:end-1]))
+        #println("$(run[:mean_freqs])")
+        freqs = parse.(Float64,String.(split(run[:mean_freqs], r";|,| |\[|\]")[2:2:end-1]))
+        #freqs = JSON.parse(run[:mean_freqs])
         #println("$freqs")
         type_freqs[param_comb] += freqs/size(tmp_runs, 1)
         c_freqs[param_comb] += sum([freqs[3], freqs[4]])/size(tmp_runs, 1)
@@ -51,7 +53,7 @@ scaling = (zmax-zmin)/(rmax-rmin)
 
 for (ki, k) in enumerate(k_vals)
     fig, axs = plt.subplots(4, length(d_vals), figsize=(12,12),
-        sharey="col", sharex="row")
+        sharex="col", sharey="row")
     for (di, d) in enumerate(d_vals)
         freqs_im = zeros(length(r_vals), length(z_vals), 4)
         for (zi, z) in enumerate(z_vals)
@@ -87,7 +89,7 @@ for (ki, k) in enumerate(k_vals)
 
 
     fig, axs = plt.subplots(2, length(d_vals), figsize=(9, 6),
-        sharey="col", sharex="row")
+        sharex="col", sharey="row")
     for (di, d) in enumerate(d_vals)
         c_freq_im = zeros(length(r_vals), length(z_vals))
         p_freq_im = zeros(length(r_vals), length(z_vals))
@@ -119,6 +121,37 @@ for (ki, k) in enumerate(k_vals)
         #fig.colorbar(im)
     #    cbar = ax.cax.colorbar(im)
     #    cbar = grid.cbar_axes[0].colorbar(im)
+    end
+    fig.suptitle("payback, k = $k")
+    #plt.subplots_adjust(right=0.8)
+    #cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+    #plt.colorbar(im, cax=cbar_ax)
+    #fig.colorbar(im)
+    fig.tight_layout(rect=[0, 0.03, 1, 0.96])
+    #plt.subplots_adjust(top=0.85)
+    display(fig)
+
+
+
+    fig, axs = plt.subplots(1, length(d_vals), figsize=(9, 6),
+        sharex="col", sharey="row")
+    for (di, d) in enumerate(d_vals)
+        generations = zeros(length(r_vals), length(z_vals))
+        for (zi, z) in enumerate(z_vals)
+            for (ri, r) in enumerate(r_vals)
+                generations[ri, zi] = fixation_times[k, z, d, r]
+            end
+        end
+        ax = axs[di]
+        im = ax.imshow(generations, origin = "lower",
+            aspect=scaling,
+            extent = [zmin, zmax, rmin, rmax])
+        if di == 1
+            ax.set_ylabel("r")
+        end
+        ax.set_xlabel("z")
+        ax.set_title("d = $d")
+        fig.colorbar(im, ax=ax)
     end
     fig.suptitle("payback, k = $k")
     #plt.subplots_adjust(right=0.8)

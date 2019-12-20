@@ -517,6 +517,7 @@ We can write down
         \\
         & - z[(k+1)(l_{ii} - l_{jj}) + l_{ij} - l_{ji}] \Big\}.
     \end{split}
+    \label{eq:b_transform}
 \end{equation}
 Another way to proceed would be to write down
 \begin{equation}
@@ -533,15 +534,31 @@ The transformation yields
             0 & 0 & -(k+1)(2 - 2d) & -2(k+1) \\
             (k+1)(2 - 2d) & (k+1)(2 - 2d) & 0 & (k+1)(- 2d) \\
             2(k+1) & 2(k+1) & (k+1)(2d) & 0
+        \end{pmatrix}
+        \\
+        & =
+        \begin{pmatrix}
+            0 & 0 & -2(k+1)(1-d) & -2(k+1) \\
+            0 & 0 & -2(k+1)(1-d) & -2(k+1) \\
+            2(k+1)(1-d) & 2(k+1)(1-d) & 0 & -2d(k+1) \\
+            2(k+1) & 2(k+1) & 2d(k+1) & 0
         \end{pmatrix},
         \\
         l^\prime_{ij} & =
         \begin{pmatrix}
             0 & -(k+1) & 0 & -(k+1) \\
-            0 & 0 & (k+1) + 1 & 0 \\
-            0 & 0 & 0 & -1 - (k+1) \\
-            0 & 0 & 0 & 0
+            k+1 & 0 & (k+1) + 1 & 0 \\
+            0 & -1 - (k+1) & 0 & -1 - (k+1) \\
+            k+1 & 0 & (k+1) + 1 & 0
         \end{pmatrix}
+        \\
+        & =
+        \begin{pmatrix}
+            0 & -(k+1) & 0 & -(k+1) \\
+            k+1 & 0 & k+2 & 0 \\
+            0 & -k-2 & 0 & -k-2 \\
+            k+1 & 0 & k+2 & 0
+        \end{pmatrix},
         \\
         r^\prime_{ij} & =
         \begin{pmatrix}
@@ -549,7 +566,26 @@ The transformation yields
             0 & 0 & -(1 - d) - (k+1)(1-d) & -1 - (k+1) \\
             (1-d) + (k+1)(1-d) & (1-d) + (k+1)(1-d) & 0 & (k+1)(1-d - 1) + (1-d - 1) \\
             1 + (k+1) & 1 + (k+1) & -(k+1)(1-d - 1) - (1-d - 1) & 0
+        \end{pmatrix}
+        \\
+        & =
+        \begin{pmatrix}
+            0 & 0 & -(k+2)(1-d) & -k-2 \\
+            0 & 0 & -(k+2)(1-d) & -k-2 \\
+            (k+2)(1-d) & (k+2)(1-d) & 0 & -(k+2)d \\
+            k+2 & k+2 & (k+2)d & 0
         \end{pmatrix}.
+    \end{split}
+\end{equation}
+Applying equation \ref{eq:b_transform} yields
+\begin{equation}
+    \begin{split}
+        b_{01} & = z(k+1) \\
+        b_{02} & = -\frac{r}{2}(2(k+1)(1-d)) + (k+2)(1-d) \\
+        b_{03} & = -\frac{r}{2}(2(k+1)) + (k+2) + z(k+1) \\
+        b_{12} & = -\frac{r}{2}(2(k+1)(1-d)) + (k+2)(1-d) - z(k+2) \\
+        b_{13} & = -\frac{r}{2}(2(k+1)) + (k+2) \\
+        b_{23} & = -\frac{r}{2}(k+1)(2d) + (k+2)d + (k+2)z
     \end{split}
 \end{equation}
 \end{section}
