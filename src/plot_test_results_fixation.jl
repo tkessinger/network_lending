@@ -86,6 +86,7 @@ for (ki, k) in enumerate(k_vals)
     fig.tight_layout(rect=[0, 0.03, 1, 0.96])
     #plt.subplots_adjust(top=0.85)
     display(fig)
+	plt.savefig("figures/average_freqs_k_$(k)_N_$(N)_all_strats.pdf")
 
 
     fig, axs = plt.subplots(2, length(d_vals), figsize=(9, 6),
@@ -130,6 +131,7 @@ for (ki, k) in enumerate(k_vals)
     fig.tight_layout(rect=[0, 0.03, 1, 0.96])
     #plt.subplots_adjust(top=0.85)
     display(fig)
+	plt.savefig("figures/payback_coop_freqs_k_$(k)_N_$(N)_all_strats.pdf")
 
 
 
@@ -161,4 +163,5 @@ for (ki, k) in enumerate(k_vals)
     fig.tight_layout(rect=[0, 0.03, 1, 0.96])
     #plt.subplots_adjust(top=0.85)
     display(fig)
+	plt.savefig("figures/fixation_times_k_$(k)_N_$(N)_all_strats.pdf")
 end

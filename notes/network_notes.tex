@@ -52,7 +52,7 @@ Strategies are labeled as follows:
     \item $3$ is payback/cooperate.
 \end{itemize}
 
-\begin{section}{Relationship between the PGG and the prisoner's dilemma}
+\section{Relationship between the PGG and the prisoner's dilemma}
 We begin by recapitulating the relationship between the PGG and a prisoner's dilemma (PD).
 In a PD, we have
 \begin{equation}
@@ -577,16 +577,63 @@ The transformation yields
         \end{pmatrix}.
     \end{split}
 \end{equation}
-Applying equation \ref{eq:b_transform} yields
+Applying equation \ref{eq:b_transform} yields (dropping the prefactor)
 \begin{equation}
     \begin{split}
         b_{01} & = z(k+1) \\
         b_{02} & = -\frac{r}{2}(2(k+1)(1-d)) + (k+2)(1-d) \\
+        & = (1-d)(k+2 - r(k+1)) \\
         b_{03} & = -\frac{r}{2}(2(k+1)) + (k+2) + z(k+1) \\
-        b_{12} & = -\frac{r}{2}(2(k+1)(1-d)) + (k+2)(1-d) - z(k+2) \\
+        & = (z-r)(k+1) + (k+2) \\
+        b_{12} & = -\frac{r}{2} \\
+        & = -r(k+1)(1-d) + (1-d-z)(k+2) \\
         b_{13} & = -\frac{r}{2}(2(k+1)) + (k+2) \\
-        b_{23} & = -\frac{r}{2}(k+1)(2d) + (k+2)d + (k+2)z
+        & = -r(k+1) + (k+2) \\
+        b_{23} & = -\frac{r}{2}(k+1)(2d) + (k+2)d + (k+2)z \\
+        & = -rd(k+1) + (k+2)(d+z).
     \end{split}
 \end{equation}
-\end{section}
+Finally, we have
+\begin{equation}
+    \begin{split}
+        \phi & = x_0 f_0 + x_1 f_1 + x_2 f_2 + x_3 f_3
+    \end{split}
+\end{equation}
+which is going to be kind of painful to calculate.
+
+We can, as a sanity check, consider the case where only strategies $0$ and $3$ compete and the bank is a mind reader.
+Then
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        0 & \frac{r(1-d)}{2} \\
+        \frac{r}{2} - z & \frac{r(2-d)}{2} - z
+    \end{pmatrix},
+\end{equation}
+which is just a donation game with $\B = v\frac{r(1-d)}{2}$, $\C = v(z - \frac{r}{2})$.
+So we expect cooperation to be favored given
+\begin{equation}
+    \frac{\B}{\C} = \frac{1-d}{2z/r - 1} > k.
+\end{equation}
+We can check this with simulations.
+
+\section{An alternative lending model}
+
+Suppose we go back to having only two types, but now the bank diligently tracks individuals' income and, if it falls below some threshold, immediately decrements their loan amount.
+What happens now?
+For simplicity, define a single threshold $\tau$.
+Individuals are initially given $v_1$.
+If an individual's fitness $p_i$ falls below $\tau$, their loan amount is immediately decremented to some value $v_2 < v_1$.
+The payoff matrix is
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        0 & \frac{r}{2} v_j \\
+        -v_i & \frac{r}{2}(v_i + v_j) - v_i
+    \end{pmatrix}.
+\end{equation}
+I think we might be able to derive a pair approximation for this model and then make adjustments as need be.
+Presumably we will eventually want $\tau$ to depend on $v_i$ (if a bank lends less money, it should demand less payback).
+Let's give it a shot.
+
 \end{document}

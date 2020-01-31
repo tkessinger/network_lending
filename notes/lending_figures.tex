@@ -1,0 +1,82 @@
+\documentclass[13pt]{amsart}
+
+\usepackage{amsfonts,latexsym,amsthm,amssymb,amsmath,amscd,euscript}
+\usepackage{fullpage}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{charter}
+\usepackage{natbib}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage[usenames,dvipsnames]{pstricks}
+
+\usepackage{hyperref}
+\hypersetup{
+    pdffitwindow=false,            % window fit to page
+    pdfstartview={Fit},            % fits width of page to window
+    pdftitle={Notes on NetworkLending},     % document title
+    pdfauthor={Taylor Kessinger},         % author name
+    pdfsubject={},                 % document topic(s)
+    pdfnewwindow=true,             % links in new window
+    colorlinks=true,               % coloured links, not boxed
+    linkcolor=OrangeRed,      % colour of internal links
+    citecolor=ForestGreen,       % colour of links to bibliography
+    filecolor=Orchid,            % colour of file links
+    urlcolor=Cerulean           % colour of external links
+}
+
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\C}{\mathcal{C}}
+
+\begin{document}
+This document contains some brief notes on simulations from \texttt{NetworkLending}.
+
+\clearpage
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{../figures/average_freqs_k_4_N_1000_all_strats.pdf}
+    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 1000$ when \emph{all} types are initially present.}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{../figures/payback_coop_freqs_k_4_N_1000_all_strats.pdf}
+    \caption{Simulation results: cooperation (top) and payback (bottom) frequencies for $k = 4$ and $N = 1000$ when \emph{all} types are initially present.}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{../figures/new_type_freqs_k_4_d_09.pdf}
+    \caption{Numerical results: replicator equation solutions when $k = 4$, $d = 0.9$, and all types are initially present.}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{../figures/average_freqs_k_4_N_1000_strats_230.pdf}
+    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 1000$ when types $0, 2, 3$ are initially present.}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{../figures/payback_coop_freqs_k_4_N_1000_strats_230.pdf}
+    \caption{Simulation results: cooperation (top) and payback (bottom) frequencies for $k = 4$ and $N = 1000$ when types $0, 2, 3$ are initially present.}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{../figures/new_type_freqs_k_4_d_09_strats_230.pdf}
+    \caption{Numerical results: replicator equation solutions when $k = 4$, $d = 0.9$, and types $0, 2, 3$ are initially present.}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{../figures/average_freqs_k_4_N_1000_strats_30.pdf}
+    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 1000$ when only types $0, 3$ are initially present.}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{../figures/payback_coop_freqs_k_4_N_1000_strats_30.pdf}
+    \caption{Simulation results: cooperation (top) and payback (bottom) frequencies for $k = 4$ and $N = 1000$ when only types $0, 3$ are initially present.}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{../figures/new_type_freqs_k_4_d_09_strats_30.pdf}
+    \caption{Numerical results: replicator equation solutions when $k = 4$, $d = 0.9$, and only types $0, 3$ are initially present.}
+\end{figure}
+
+\end{document}

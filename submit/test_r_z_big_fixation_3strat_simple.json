@@ -1,0 +1,52 @@
+{
+  "N":
+  {
+    "value": 200
+  },
+  "k":
+  {
+    "value": [4]
+  },
+  "r":
+  {
+    "range":
+    {
+      "start": 1.0,
+      "stop": 2.0,
+      "length": 21
+    }
+  },
+  "z":
+  {
+    "range":
+    {
+      "start": 0.0,
+      "stop": 2.0,
+      "length": 21
+    }
+  },
+  "d":
+  {
+    "value": [0.0, 0.5, 0.9, 1.0]
+  },
+  "w":
+  {
+    "value": 0.01
+  },
+  "num_trials":
+  {
+    "value": 20
+  },
+  "strategies":
+  {
+    "value": ["20", "30", "23", "230"]
+  },
+  "good_reputations":
+  {
+    "value": "payback"
+  },
+  "output":
+  {
+    "value": "output/test_lending_fixation_3strat_4.csv"
+  }
+}

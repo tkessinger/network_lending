@@ -98,6 +98,7 @@ function main(args)
         "z" => Dict("value" => 1.3, "type" => Float64),
         "d" => Dict("value" => 0.9, "type" => Float64),
         "w" => Dict("value" => 0.01, "type" => Float64),
+		"strategies" => Dict("value" => "023", "type" => String),
         "good_reputations" => Dict("value" => "payback", "type" => String),
         "num_trials" => Dict("value" => 10, "type" => Int64),
         "output" => Dict("value" => "output/test.csv", "type" => String)
@@ -137,6 +138,7 @@ function main(args)
             z = pard["z"]
             d = pard["d"]
             w = pard["w"]
+			strategies = pard["strategies"]
             if pard["good_reputations"] == "payback"
                 good_reputations = [1,3]
             elseif pard["good_reputations"] == "coop"
@@ -146,6 +148,8 @@ function main(args)
             elseif pard["good_reputations"] == "both"
                 good_repuations = [3]
             end
+
+			strategies = [parse(Int64, x) for x in split(strategies, "")]
 
             num_trials = pard["num_trials"]
             output = pard["output"]
@@ -158,7 +162,7 @@ function main(args)
             network = Network(N, k)
 
             # initialize the NetworkPopulation object
-            pop = NetworkPopulation(network, game)
+            pop = NetworkPopulation(network, game, strategies)
 
             # initialize the frequency trajectories
             ft = FreqTraj(pop)
@@ -227,4 +231,4 @@ end
 
 #main(ARGS)
 
-main(["--input", "submit/test_r_z_big_fixation.json"])
+main(["--input", "submit/test_r_z_big_fixation_3strat_simple.json"])

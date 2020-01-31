@@ -100,7 +100,7 @@ for (ri, r) in enumerate(r_vals)
 	for (zi, z) in enumerate(z_vals)
 		gp = GameParams(r, z, d)
 		p = NOParams(gp, k)
-		x0 = [0.25; 0.25; 0.25; 0.25]
+		x0 = [0.34; 0.0; 0.33; 0.33]
 		tspan = (0.0,10000.0)
 		prob = ODEProblem(dot_x!, x0, tspan, p)
 		sol = solve(prob)
@@ -113,10 +113,10 @@ end
 zmin, zmax, rmin, rmax = z_vals[1], z_vals[end], r_vals[1], r_vals[end]
 scaling = (zmax-zmin)/(rmax-rmin)
 
-savefig = false
+savefig = true
 
 fig = plt.figure()
-plt.imshow(coop_freq, origin="lower",
+plt.imshow(coop_freq, origin="lower", vmin=0, vmax=1,
 	extent = [zmin, zmax, rmin, rmax], aspect = scaling)
 plt.xlabel(L"z")
 plt.ylabel(L"r")
@@ -125,11 +125,11 @@ plt.colorbar()
 plt.tight_layout()
 display(fig)
 if savefig
-	plt.savefig("figures/new_coop_frequency_k_$(k)_d_$(d).pdf")
+	plt.savefig("figures/new_coop_frequency_k_$(k)_d_$(d)_strats_230.pdf")
 end
 
 fig = plt.figure()
-plt.imshow(payback_freq, origin="lower",
+plt.imshow(payback_freq, origin="lower", vmin=0, vmax=1,
 	extent = [zmin, zmax, rmin, rmax], aspect = scaling)
 plt.xlabel(L"z")
 plt.ylabel(L"r")
@@ -138,7 +138,7 @@ plt.colorbar()
 plt.tight_layout()
 display(fig)
 if savefig
-	plt.savefig("figures/new_payback_frequency_k_$(k)_d_$(d).pdf")
+	plt.savefig("figures/new_payback_frequency_k_$(k)_d_$(d)_strats_230.pdf")
 end
 
 fig, axs = plt.subplots(2,2, sharey="col", sharex="row",
@@ -146,7 +146,7 @@ fig, axs = plt.subplots(2,2, sharey="col", sharex="row",
 
 for i in 1:4
 	ax = axs[i]
-	im = ax.imshow(results[:,:,i], origin="lower",
+	im = ax.imshow(results[:,:,i], origin="lower", vmin=0, vmax=1,
 		extent = [zmin, zmax, rmin, rmax], aspect=scaling)
 	if i ∈ [2, 4]
 		ax.set_xlabel(L"z")
@@ -160,5 +160,5 @@ fig.suptitle("type frequencies, k = $k, d = $d")
 fig.tight_layout(rect=[0, 0.03, 1, 0.96])
 display(fig)
 if savefig
-	plt.savefig("figures/new_type_freqs_k_$(k)_d_$(d).pdf")
+	plt.savefig("figures/new_type_freqs_k_$(k)_d_$(d)_strats_230.pdf")
 end

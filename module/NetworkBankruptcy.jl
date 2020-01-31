@@ -66,7 +66,7 @@ module NetworkBankruptcy
         w::Float64 # strength of selection
         params::GameParams # parameters of the PGG with lending
 		thresholds::Array{Float64,1} # the payback thresholds for each game
-		# set this to [1.0, 1.0-d] to ensure that people must pay back the principal
+		# set this to [1.0-d, 1.0] to ensure that people must pay back the principal
 		function NetworkGame(w::Float64, params::GameParams)
 			# initializes a game with default reputations
 			return new(w, params, [1.0, 1.0-params.d])
@@ -96,8 +96,9 @@ module NetworkBankruptcy
 			# begin by initializing the population with random strategies
 			strategies = random_strategies(network.N, [0,1])
 			# update everyone's reputations and fitnesses
-			reputations = ones(Float64, network.N)
-            fitnesses = get_all_fitnesses(network, game, strategies, reputations)
+			#reputations = zeros(Int64, network.N)
+			reputations = [rand([0,1]) for i in 1:network.N]
+			fitnesses = get_all_fitnesses(network, game, strategies, reputations)
             generation = 0
 			return new(network, game, strategies, reputations, fitnesses, generation)
         end
@@ -240,16 +241,6 @@ module NetworkBankruptcy
 		return strategies
 	end
 
-    function decompose_strategy(
-        strat::Int64
-        )
-        # returns an array of true and false
-		# for individual's strategy components
-        # large bit: defect/cooperate
-        # small bit: shirk/payback
-        return [Bool(strat ÷ 2), Bool(strat%2)]
-    end
-
     function get_all_fitnesses(
 		network::Network,
 		game::NetworkGame,
@@ -351,26 +342,27 @@ module NetworkBankruptcy
 		# updates a single individual's reputation
 		# depending on their current strategy
 		# this is just a wrapper for get_reputation() below
-		pop.reputations[indv] = get_reputation(pop.game, pop.strategies[indv])
-		if pop.strategies[indv] ∈ pop.game.good_reputations
-			pop.reputations[indv] = 1
-		else
-			pop.reputations[indv] = 0
-		end
+		pop.reputations[indv] = get_reputation(pop.fitnesses[indv], pop.reputations[indv], pop.game.thresholds, pop.network.k)
 	end
 
 	function get_all_reputations(
-		game::NetworkGame,
-		strategies::Array{Int64, 1}
+		pop::NetworkPopulation
 		)
-		return [get_reputation(game, strategy) for strategy in strategies]
+		return [get_reputation(pop.fitnesses[i], pop.reputations[i], pop.game.thresholds, pop.network.k) for i in 1:pop.network.N]
 	end
 
 	function get_reputation(
-		game::NetworkGame,
-		strategy::Int64
+		fitness::Float64,
+		reputation::Int64,
+		thresholds::Array{Float64,1},
+		k::Int64
 		)
-		if strategy ∈ game.good_reputations
+		# if the individual has enough "money" to pay back their k loans, return 1
+		# else, return 0
+		println("indv has fitness $fitness and reputation $reputation")
+		println("this is $(fitness > k*thresholds[reputation+1] ? "higher" : "lower") than the threshold $(k*thresholds[reputation+1])")
+		println("so individual's reputation is set to $(fitness > k*thresholds[reputation+1] ? 1 : 0)")
+		if fitness > k*thresholds[reputation+1]
 			return 1
 		else
 			return 0
@@ -390,24 +382,19 @@ module NetworkBankruptcy
 		# pool amount is multiplied by r and redistributed
 		# the bank demands z back as interest
 
-        r, z, d = gp.r, gp.z, gp.d # get the game parameters
+        r, d = gp.r, gp.d # get the game parameters
 
 		# do these individuals have good reputations?
-        loan = [(x==1 ? 1.0 : 1.0-d) for x in rep]
+        money = [(x==1 ? 1.0 : 1.0-d) for x in rep]
 
-        money = loan
 		# get the individual strategy bits
-		coop = [decompose_strategy(x)[1] for x in strat]
-		payback = [decompose_strategy(x)[2] for x in strat]
+		coop = strat
 
 		# figure out how much money goes in the pot
         PGG_pot = r*(sum([coop[i]*money[i] for i in 1:2]))
 
 		# determine payoffs
 		payoffs = [PGG_pot/2 + (-coop[i])*money[i] for i in 1:2]
-
-		# subtract out loan repayment, if applicable
-        [payoffs[i] -= loan[i]*z*payback[i] for i in 1:2]
 
         return payoffs
     end
@@ -431,6 +418,7 @@ module NetworkBankruptcy
 				update_indv!(pop, invading_neighbor, indv)
 			end
 			# update their reputation
+			# later we can allow neighbors to update their reputations, too
 			update_reputation!(pop, indv)
 			pop.generation += 1
 		end
