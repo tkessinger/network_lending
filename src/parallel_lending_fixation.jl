@@ -231,4 +231,4 @@ end
 
 #main(ARGS)
 
-main(["--input", "submit/test_r_z_big_fixation_3strat_simple.json"])
+main(["--input", "submit/test_r_z_big_fixation_3strat_hoarding.json"])

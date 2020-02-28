@@ -113,6 +113,7 @@ The $\mathcal{B}/\mathcal{C} > k$ condition implies
         \therefore r(k+1) & > 2k \\
         \therefore r & > \frac{2k}{k+1}.
     \end{split}
+    \label{eq:base_case}
 \end{equation}
 We need $2 > 2k/(k+1)$ for cooperation to be possible, or equivalently
 \begin{equation}
@@ -606,16 +607,104 @@ Then
 \begin{equation}
     a_{ij} = v
     \begin{pmatrix}
-        0 & \frac{r(1-d)}{2} \\
-        \frac{r}{2} - z & \frac{r(2-d)}{2} - z
+        0 & \frac{r}{2} \\
+        \frac{r}{2} - (1+z) & r - (1+z)
     \end{pmatrix},
 \end{equation}
-which is just a donation game with $\B = v\frac{r(1-d)}{2}$, $\C = v(z - \frac{r}{2})$.
+which is just a donation game with $\B = v\frac{r}{2}$, $\C = v(1 + z - \frac{r}{2})$.
+Observe that $d$ \emph{does not appear in this matrix at all}, since the defector never invests their money at all.
 So we expect cooperation to be favored given
 \begin{equation}
-    \frac{\B}{\C} = \frac{1-d}{2z/r - 1} > k.
+	\begin{split}
+        \frac{\B}{\C} = \frac{r}{2(1+z) - r} & > k
+        \\
+        r & > k[2(1+z)-r]
+        \\
+        r & > 2k(1+z) - kr
+        \\
+        r(1+k) & > 2k(1+z)
+        \\
+        r & > \frac{2k(1+z)}{k+1}.
+    \end{split}
 \end{equation}
-We can check this with simulations.
+As a sanity check, when $z = 0$ (no interest), this is identical to equation \ref{eq:base_case}.
+This implies that as $z$ decreases, cooperation becomes easier to evolve.
+For example, letting $k = 4$ and $z = 0.5$ yields $r > 12/5$, which is more difficult than $r > 8/5$ in the lending-free case.
+We may as well also see under what circumstances this game qualifies as a prisoner's dilemma:
+\begin{equation}
+    \begin{split}
+        T > R & > P > S \\
+        \mathcal{B} > \mathcal{B} - \mathcal{C} & > 0 > -\mathcal{C} \\
+        \therefore \mathcal{B} & > \mathcal{C} > 0 \\
+        \therefore r & > 2(1 + z) - r > 0 \\
+        \therefore 2r & > 2(1+z)\\
+        \therefore r & > (1+z), \text{and}
+        \\
+        2(1+z) - r & > 0 \\
+        \therefore r & < 2(1+z) \\
+        \therefore 2(1+z) & > r > 1+z.
+    \end{split}
+\end{equation}
+Note that $z = 0$ yields $2 > r > 1$, identical with equation \ref{eq:base_case}.
+
+This is perhaps counterintuitive and reveals a potential underlying flaw in our model.
+Ideally we would like individuals to somehow suffer from their lack of funding, e.g.:
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        1-d & 1-d + \frac{r}{2} \\
+        \frac{r}{2} - (1+z) & r - (1+z)
+    \end{pmatrix}
+\end{equation}
+Explanation:
+If you defect, you keep the $v(1-d)$ you were given.
+If not, you invest it all in the pot and receive back $vr/2$, and now you must pay back $v(1+z)$ to the bank.
+This is now no longer a donation game, though we can make it one by subtracting $v(1-d)$ from everyone, under the theory that only differences in fitness matter.
+Then:
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        0 & \frac{r}{2} \\
+        \frac{r}{2} - (1+z) - (1-d) & r - (1+z) - (1-d)
+    \end{pmatrix}
+\end{equation}
+which is a donation game with $\B = \frac{r}{2}, \C = (1-d) + (1+z) - \frac{r}{2}$.
+We find that $\B/\C > k$ implies
+\begin{equation}
+    r > \frac{2k(2 - d + z)}{k+1},
+\end{equation}
+which is a PD iff $1+d > k+z$ (a hard condition to satisfy) and $3k - 2d + 2z > 1$ (an easy condition to satisfy).
+It is worth noting that if $z = d = 0$, we have $r > 4k/(k+1)$, which is actually different from equation \ref{eq:base_case} and \emph{cannot} be a PD due to the requirements $1 > k$ and $3k > 1$, or equivalently $1 > k > 1/3$ ($k$ of course must be an integer).
+The complicating factor is that, since the cooperator pays back the loan rather than keep the principal for themselves, it is pretty hard to get cooperation to evolve at all.
+The overall payoff matrix, when the bank is a mind reader, should be determined as follows.
+A shirker receives $(1-d)$: a payerback receives $1$.
+They then invest in the pot accordingly.
+For two type $0$ or $1$, the pot is empty.
+For a type $0$ or $1$ and a type $2$, the pot is $(1-d)$.
+For a type $0$ or $1$ and a type $3$, the pot is $1$.
+For two type $2$, it is $2(1-d)$.
+For a type $2$ and a type $3$, it is $2-d$.
+Finally, for two type $3$, it is $2$.
+Types $1$ and $3$ pay back $1 + z$ interest: types $0$ and $2$ do not pay back (so in principle type $0$ can keep their entire $1-d$ endowment).
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        1-d & 1-d & (1-d)(1+\frac{r}{2}) & 1-d + \frac{r}{2} \\
+        -z & -z & \frac{r}{2}(1-d) -z & \frac{r}{2} -z \\
+        (\frac{r}{2} - 1)(1-d) & (\frac{r}{2} - 1)(1-d) & (r-1)(1-d)& \frac{r}{2}(2 - d) - (1-d)\\
+        \frac{r}{2} - 1 - z & \frac{r}{2} - 1 - z & \frac{r}{2}(2 - d) - 1 - z & r - 1 -z
+    \end{pmatrix}.
+\end{equation}
+We can compare this to our ``old'' payoff matrix \begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        0 & 0 & \frac{r}{2}(1-d) & \frac{r}{2} \\
+        -z & -z & \frac{r}{2}(1-d) -z & \frac{r}{2} -z \\
+        (\frac{r}{2} - 1)(1-d) & (\frac{r}{2} - 1)(1-d) & (r-1)(1-d)& \frac{r}{2}(2 - d) - (1-d)\\
+        \frac{r}{2} - 1 - z & \frac{r}{2} - 1 -z & \frac{r}{2}(2 - d) - 1 - z & r - 1 -z
+    \end{pmatrix}
+\end{equation}
+and notice that type $0$ is going to be better off under the new payoff matrix, which should make cooperation harder to evolve.
 
 \section{An alternative lending model}
 
@@ -628,7 +717,7 @@ The payoff matrix is
 \begin{equation}
     a_{ij} =
     \begin{pmatrix}
-        0 & \frac{r}{2} v_j \\
+        v_i & v_i + \frac{r}{2} v_j \\
         -v_i & \frac{r}{2}(v_i + v_j) - v_i
     \end{pmatrix}.
 \end{equation}

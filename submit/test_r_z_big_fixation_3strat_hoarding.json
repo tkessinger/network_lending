@@ -47,6 +47,6 @@
   },
   "output":
   {
-    "value": "output/test_lending_fixation_3strat_5.csv"
+    "value": "output/test_lending_fixation_3strat_hoarding.csv"
   }
 }

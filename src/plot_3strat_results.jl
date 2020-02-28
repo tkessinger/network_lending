@@ -9,7 +9,7 @@
 using CSV, PyPlot, Statistics, NetworkLending, JSON
 
 # load simulation output as a dataframe
-runs = CSV.read("output/test_lending_fixation_3strat_3.csv")
+runs = CSV.read("output/test_lending_fixation_3strat_hoarding.csv")
 
 # dicts to store fixation probabilities
 type_freqs = Dict{Tuple{Int64, Int64, Float64, Float64, Float64},Array{Float64, 1}}()
@@ -88,7 +88,7 @@ for (ki, k) in enumerate(k_vals)
             fig.tight_layout(rect=[0, 0.03, 1, 0.96])
             #plt.subplots_adjust(top=0.85)
             display(fig)
-            plt.savefig("figures/average_freqs_k_$(k)_N_$(N)_strats_$(strats).pdf")
+            plt.savefig("figures/hoarding_average_freqs_k_$(k)_N_$(N)_strats_$(strats).pdf")
 
 
         fig, axs = plt.subplots(2, length(d_vals), figsize=(9, 6),
@@ -133,7 +133,7 @@ for (ki, k) in enumerate(k_vals)
         fig.tight_layout(rect=[0, 0.03, 1, 0.96])
         #plt.subplots_adjust(top=0.85)
         display(fig)
-        plt.savefig("figures/payback_coop_freqs_k_$(k)_N_$(N)_strats_$(strats).pdf")
+        plt.savefig("figures/hoarding_payback_coop_freqs_k_$(k)_N_$(N)_strats_$(strats).pdf")
 
 
 

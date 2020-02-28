@@ -45,6 +45,7 @@ module NetworkLending
         r::Float64 # synergy parameter
         z::Float64 # interest on loans (from german "Zins", meaning "interest")
         d::Float64 # decrement for individuals with bad reputations
+		#hoard::Bool # do type 0 individuals keep all their money or not?
 
         # constructors
         function GameParams(r::Float64, z::Float64)
@@ -379,6 +380,7 @@ module NetworkLending
         strat::Array{Int64, 1},
         rep::Array{Int64, 1},
         gp::GameParams,
+		#hoard::Bool=false,
         verbose::Bool=false
         )
 		# computes the pair payoffs for a PGG with lending
@@ -401,11 +403,16 @@ module NetworkLending
 		# figure out how much money goes in the pot
         PGG_pot = r*(sum([coop[i]*money[i] for i in 1:2]))
 
+		payoffs = zeros(Float64, 2)
+
+		# initial payoff is just the loan amount
+		[payoffs[i] = money[i] for i in 1:2]
+
 		# determine payoffs
-		payoffs = [PGG_pot/2 + (-coop[i])*money[i] for i in 1:2]
+		[payoffs[i] += PGG_pot/2 + (-coop[i])*money[i] for i in 1:2]
 
 		# subtract out loan repayment, if applicable
-        [payoffs[i] -= loan[i]*z*payback[i] for i in 1:2]
+        [payoffs[i] -= money[i]*(1+z)*payback[i] for i in 1:2]
 
         return payoffs
     end

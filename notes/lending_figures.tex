@@ -31,52 +31,443 @@
 
 \begin{document}
 This document contains some brief notes on simulations from \texttt{NetworkLending}.
+As a refresher:
+\begin{itemize}
+    \item type $0$ hoards its money.
+    \item type $1$ pays back what it's lent.
+    \item type $2$ invests its endowment but does not pay the money back to the bank.
+    \item type $3$ invests its endowment and pays the bank back.
+\end{itemize}
+In each pair of graphs, the first is simulation output: the second is the numerical solution of the replicator equation
+\begin{equation}
+    \dot{x}_i = x_i (f_i + g_i - \phi),
+\end{equation}
+with
+\begin{equation}
+    \begin{split}
+        f_i & = \sum_j a_{ij} x_j,\\
+        g_i & = \sum_j b_{ij} x_j,\\
+        b_{ij} & = \frac{(k+1)a_{ii} + a_{ij} - a_{ji} - (k+1)a_{jj}}{(k+1)(k-2)},\\
+        \phi & = \sum_i x_i f_i,
+    \end{split}
+\end{equation}
+and all terms calculated on the fly rather than algebraically (the $b_{ij}$ terms are correct for death-birth updating).
+
+Overall the agreement between numerical and simulation results is decent, but there is a nagging concern.
+Observe that generally, in both sets of results, the value of $d$ \emph{almost does not matter}.
+I have a hunch as to why this is.
+
+\subsection*{Sample analysis of dynamics: types $0$ and $3$}
+
+Let's go back to our original payoff matrix in the case where the bank is a mind reader (so that shirkers are immediately punished by having their loan amount reduced from $v$ to $v(1-d)$):
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        0 & 0 & \frac{r}{2}(1-d) & \frac{r}{2} \\
+        -z & -z & \frac{r}{2}(1-d) -z & \frac{r}{2} -z \\
+        (\frac{r}{2} - 1)(1-d) & (\frac{r}{2} - 1)(1-d) & (r-1)(1-d)& \frac{r}{2}(2 - d) - (1-d)\\
+        \frac{r}{2} - 1 - z & \frac{r}{2} - 1 -z & \frac{r}{2}(2 - d) - 1 - z & r - 1 -z
+    \end{pmatrix},
+\end{equation}
+which is what we have been using in both simulations and numerical analysis.
+A ``reduced'' version of this, where only types $0$ and $3$ are present, is
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        0 & \frac{r}{2} \\
+        \frac{r}{2} - (1+z) & r - (1+z)
+    \end{pmatrix},
+\end{equation}
+which is just a donation game with $\B = v\frac{r}{2}$, $\C = v(1 + z - \frac{r}{2})$.
+Observe that $d$ \emph{does not appear in this matrix at all}, since the defector never invests their money at all.
+If this seems strange, \emph{it is}, and I address this in the later section.
+We expect cooperation to be favored given
+\begin{equation}
+	\begin{split}
+        \frac{\B}{\C} = \frac{r}{2(1+z) - r} & > k
+        \\
+        r & > k[2(1+z)-r]
+        \\
+        r & > 2k(1+z) - kr
+        \\
+        r(1+k) & > 2k(1+z)
+        \\
+        r & > \frac{2k(1+z)}{k+1}.
+    \end{split}
+\end{equation}
+As a sanity check, when $z = 0$ (no interest), this is just a pairwise PGG, and the condition is $r > 2k/(k+1)$.
+Az $z$ decreases, cooperation becomes harder to evolve.
+For example, letting $k = 4$ and $z = 0.5$ yields $r > 12/5$, which is more difficult than $r > 8/5$ in the lending-free case.
+We may as well also see under what circumstances this game qualifies as a prisoner's dilemma:
+\begin{equation}
+    \begin{split}
+        T > R & > P > S \\
+        \mathcal{B} > \mathcal{B} - \mathcal{C} & > 0 > -\mathcal{C} \\
+        \therefore \mathcal{B} & > \mathcal{C} > 0 \\
+        \therefore r & > 2(1 + z) - r > 0 \\
+        \therefore 2r & > 2(1+z)\\
+        \therefore r & > (1+z), \text{and}
+        \\
+        2(1+z) - r & > 0 \\
+        \therefore r & < 2(1+z) \\
+        \therefore 2(1+z) & > r > 1+z.
+    \end{split}
+\end{equation}
+Note that $z = 0$ yields $2 > r > 1$, which is just the condition for a pairwise PGG to be a prisoner's dilemma at all.
+
+\subsection*{Plots}
+
+Following are plots using the existing payoff matrix.
+Afterwards I discuss some possible fixes and steps forward.
 
 \clearpage
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{../figures/average_freqs_k_4_N_1000_all_strats.pdf}
-    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 1000$ when \emph{all} types are initially present.}
+    \includegraphics[width=0.5\textwidth]{../figures/average_freqs_k_4_N_200_strats_1230.pdf}
+    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 200$ when \emph{all} types are initially present.}
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{../figures/payback_coop_freqs_k_4_N_1000_all_strats.pdf}
-    \caption{Simulation results: cooperation (top) and payback (bottom) frequencies for $k = 4$ and $N = 1000$ when \emph{all} types are initially present.}
+    \includegraphics[width=0.5\textwidth]{../figures/numerical_results_k_4_strats_1230.pdf}
+    \caption{Numerical results: final frequencies for $k = 4$ when \emph{all} types are initially present.}
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{../figures/new_type_freqs_k_4_d_09.pdf}
-    \caption{Numerical results: replicator equation solutions when $k = 4$, $d = 0.9$, and all types are initially present.}
+    \includegraphics[width=0.5\textwidth]{../figures/average_freqs_k_4_N_200_strats_230.pdf}
+    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 200$ when types $2, 3, 0$ are initially present.}
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{../figures/average_freqs_k_4_N_1000_strats_230.pdf}
-    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 1000$ when types $0, 2, 3$ are initially present.}
+    \includegraphics[width=0.5\textwidth]{../figures/numerical_results_k_4_strats_230.pdf}
+    \caption{Numerical results: final frequencies for $k = 4$ when types $2, 3, 0$ are initially present.}
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{../figures/payback_coop_freqs_k_4_N_1000_strats_230.pdf}
-    \caption{Simulation results: cooperation (top) and payback (bottom) frequencies for $k = 4$ and $N = 1000$ when types $0, 2, 3$ are initially present.}
+    \includegraphics[width=0.5\textwidth]{../figures/average_freqs_k_4_N_200_strats_20.pdf}
+    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 200$ when types $2, 0$ are initially present.}
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{../figures/new_type_freqs_k_4_d_09_strats_230.pdf}
-    \caption{Numerical results: replicator equation solutions when $k = 4$, $d = 0.9$, and types $0, 2, 3$ are initially present.}
+    \includegraphics[width=0.5\textwidth]{../figures/numerical_results_k_4_strats_20.pdf}
+    \caption{Numerical results: final frequencies for $k = 4$ when types $2, 0$ are initially present.}
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{../figures/average_freqs_k_4_N_1000_strats_30.pdf}
-    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 1000$ when only types $0, 3$ are initially present.}
+    \includegraphics[width=0.5\textwidth]{../figures/average_freqs_k_4_N_200_strats_30.pdf}
+    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 200$ when types $3, 0$ are initially present.}
+\end{figure}
+
+
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{../figures/numerical_results_k_4_strats_30.pdf}
+    \caption{Numerical results: final frequencies for $k = 4$ when types $3, 0$ are initially present.
+    The blips for type $2$ appear to be artifacts.}
+\end{figure}
+
+\clearpage
+
+\subsection*{A fly in the ointment: $d$ should matter!}
+
+This is perhaps counterintuitive and reveals a potential underlying flaw in our model.
+Ideally we would like individuals to somehow suffer from their lack of funding, e.g.:
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        1-d & 1-d + \frac{r}{2} \\
+        \frac{r}{2} - (1+z) & r - (1+z)
+    \end{pmatrix}
+\end{equation}
+Explanation:
+If you defect, you keep the $v(1-d)$ you were given.
+If not, you invest it all in the pot and receive back $vr/2$, and now you must pay back $v(1+z)$ to the bank.
+This is now no longer a donation game, though we can make it one by subtracting $v(1-d)$ from everyone, under the theory that only differences in fitness matter.
+Then:
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        0 & \frac{r}{2} \\
+        \frac{r}{2} - (1+z) - (1-d) & r - (1+z) - (1-d)
+    \end{pmatrix}
+\end{equation}
+which is a donation game with $\B = \frac{r}{2}, \C = (1-d) + (1+z) - \frac{r}{2}$.
+We find that $\B/\C > k$ implies
+\begin{equation}
+    r > \frac{2k(2 - d + z)}{k+1},
+    \label{eq:0v3}
+\end{equation}
+which is a PD iff $1+d > k+z$ (a hard condition to satisfy) and $3k - 2d + 2z > 1$ (an easy condition to satisfy).
+It is worth noting that if $z = d = 0$, we have $r > 4k/(k+1)$, which \emph{cannot} be a PD due to the requirements $1 > k$ and $3k > 1$, or equivalently $1 > k > 1/3$ ($k$ of course must be an integer).
+The complicating factor is that, since the cooperator pays back the loan rather than keep the principal for themselves, it will be pretty hard to get cooperation to evolve at all.
+
+\subsection*{Correcting this conceptual error}
+
+The overall payoff matrix, when the bank is a mind reader, should be determined as follows.
+A shirker receives $(1-d)$: a payerback receives $1$.
+They then invest in the pot accordingly.
+For two type $0$ or $1$, the pot is empty.
+For a type $0$ or $1$ and a type $2$, the pot is $(1-d)$.
+For a type $0$ or $1$ and a type $3$, the pot is $1$.
+For two type $2$, it is $2(1-d)$.
+For a type $2$ and a type $3$, it is $2-d$.
+Finally, for two type $3$, it is $2$.
+Types $1$ and $3$ pay back $1 + z$ interest: types $0$ and $2$ do not pay back (so in principle type $0$ can keep their entire $1-d$ endowment).
+
+We can talk through the cases in a little more detail:
+\begin{itemize}
+    \item $i = 0, j = 0$.
+    $i$ receives $v_i$ and $j$ receives $v_j$.
+    Neither invests or pays it back.
+    Their payoffs should be $(v_i, v_j)$.
+    \item $i = 0, j = 1$.
+    $i$ receives $v_i$ and $j$ receives $v_j$.
+    $i$ holds on to their money and $j$ pays back $(1+z)v_j$.
+    Their payoffs should be $(v_i, -zv_j)$.
+    \item $i = 0, j = 2$.
+    $i$ receives $v_i$ and $j$ receives $v_j$.
+    $i$ holds on to their money and $j$ invests $v_j$ into the pot.
+    The pot becomes $rv_j$.
+    $i$ receives $rv_j/2$ and $j$ receives $rv_j/2$.
+    Both players keep the result.
+    Their payoffs should be $(v_i + rv_j/2, rv_j/2)$.
+    \item $i = 0, j = 3$.
+    $i$ receives $v_i$ and $j$ receives $v_j$.
+    $i$ holds on to their money and $j$ invests $v_j$ into the pot.
+    The pot becomes $rv_j$.
+    $i$ receives $rv_j/2$ and $j$ receives $rv_j/2$.
+    $j$ then repays $(1+z)v_j$ to the bank.
+    Their payoffs should be $(v_i + rv_j/2, rv_j/2 - (1+z)v_j)$.
+    \item $i = 1, j = 1$.
+    $i$ receives $v_i$ and $j$ receives $v_j$.
+    Both $i$ and $j$ hold on to their money.
+    They then pay back $(1+z)v_i$ and $(1+z)v_j$, respectively.
+    Their payoffs are $-zv_i, -zv_j$.
+    \item $i = 1, j = 2$.
+    $i$ receives $v_i$ and $j$ receives $v_j$.
+    $i$ holds on to their money and $j$ invests $v_j$ into the pot.
+    The pot becomes $rv_j$.
+    $i$ receives $rv_j/2$ and $j$ receives $rv_j/2$.
+    $i$ then repays $(1+z)v_i$ to the bank.
+    $j$ keeps their money.
+    Their payoffs should be $(rv_j/2 - zv_i, rv_j/2)$.
+    \item $i = 1, j = 3$.
+    $i$ receives $v_i$ and $j$ receives $v_j$.
+    $i$ holds on to their money and $j$ invests $v_j$ into the pot.
+    The pot becomes $rv_j$.
+    $i$ receives $rv_j/2$ and $j$ receives $rv_j/2$.
+    $i$ then repays $(1+z)v_i$ to the bank, as does $j$ with $(1+z)v_j$.
+    Their payoffs should be $(rv_j/2 - zv_i, rv_j/2 - (1+z)v_j)$.
+    \item $i = 2, j = 2$.
+    $i$ receives $v_i$ and $j$ receives $v_j$.
+    They each invest their money into the pot, which is now $v_i + v_j$.
+    Each then receives $r(v_i + v_j)/2$ and pays back nothing.
+    Their total payoff is $(r(v_i + v_j)/2, r(v_i + v_j)/2$.
+    \item $i = 2, j = 3$.
+    $i$ receives $v_i$ and $j$ receives $v_j$.
+    They each invest their money into the pot, which is now $v_i + v_j$.
+    Each then receives $r(v_i + v_j)/2$.
+    $j$ pays back $(1+z)v_j$.
+    Their total payoff is $(r(v_i + v_j)/2, r(v_i + v_j)/2 - (1+z)v_j$.
+    \item $i = 3, j = 3$.
+    $i$ receives $v_i$ and $j$ receives $v_j$.
+    They each invest their money into the pot, which is now $v_i + v_j$.
+    Each then receives $r(v_i + v_j)/2$.
+    $i$ pays back $(1+z)v_i$ and $j$ pays back $(1+z)v_j$.
+    Their total payoff is $(r(v_i + v_j)/2 - (1+z)v_i, r(v_i + v_j)/2 - (1+z)v_j$.
+\end{itemize}
+
+The overall payoff matrix should look like
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        v_i & v_i & v_i + r\frac{v_j}{2} & v_i + r\frac{v_j}{2} \\
+        -zv_i & -zv_i & r\frac{v_j}{2} - zv_i & r\frac{v_j}{2} - zv_i \\
+        r\frac{v_i}{2} & r\frac{v_i}{2} & r\frac{v_i + v_j}{2} & r\frac{v_i + v_j}{2} \\
+        r\frac{v_i}{2} - (1+z)v_i & r\frac{v_i}{2} - (1+z)v_i & r\frac{v_i + v_j}{2} - (1+z)v_i & r\frac{v_i + v_j}{2} - (1+z)v_i
+    \end{pmatrix}.
+\end{equation}
+Assuming the bank is a mind reader, we have $v_i = v$ for type $1$ and $3$, $v_i = v(1-d)$ for types $0$ and $2$.
+Thus
+\begin{equation}
+    a_{ij} =
+    v\begin{pmatrix}
+        1-d & 1-d & 1-d + r\frac{1-d}{2} & 1-d + r\frac{1}{2} \\
+        -z & -z & r\frac{1-d}{2} - z & r\frac{1}{2} - z \\
+        r\frac{1-d}{2} & r\frac{1-d}{2} & r\frac{1-d + 1-d}{2} & r\frac{1-d + 1}{2} \\
+        r\frac{1}{2} - (1+z) & r\frac{1}{2} - (1+z) & r\frac{1 + 1-d}{2} - (1+z) & r\frac{2}{2} - (1+z)
+    \end{pmatrix}.
+\end{equation}
+Cleaning up the notation ever so slightly yields
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        1-d & 1-d & (1-d)(1+\frac{r}{2}) & 1-d + \frac{r}{2} \\
+        -z & -z & \frac{r}{2}(1-d) -z & \frac{r}{2} -z \\
+        \frac{r}{2}(1-d) & \frac{r}{2}(1-d) & r(1-d) & \frac{r}{2}(2 - d)\\
+        \frac{r}{2} - 1 - z & \frac{r}{2} - 1 - z & \frac{r}{2}(2 - d) - 1 - z & r - 1 -z
+    \end{pmatrix}.
+\end{equation}
+We can compare this to our ``old'' payoff matrix \begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        0 & 0 & \frac{r}{2}(1-d) & \frac{r}{2} \\
+        -z & -z & \frac{r}{2}(1-d) -z & \frac{r}{2} -z \\
+        (\frac{r}{2} - 1)(1-d) & (\frac{r}{2} - 1)(1-d) & (r-1)(1-d)& \frac{r}{2}(2 - d) - (1-d)\\
+        \frac{r}{2} - 1 - z & \frac{r}{2} - 1 -z & \frac{r}{2}(2 - d) - 1 - z & r - 1 -z
+    \end{pmatrix}
+\end{equation}
+and notice that type $0$ is going to be better off under the new payoff matrix, which should make cooperation harder to evolve, but type $2$ is also going to be better off.
+Previously we had been wrongly subtracting out a factor of $(1-d)$ in type $2$'s payoffs, making the same mistake as with type $0$; the unreturned portion of their endowment was simply disappearing into the ether.
+
+\subsection*{Dynamics: Types $0$ and $3$}
+
+When only types $0$ and $3$ are present, the payoff matrix is
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        v_i & v_i + v_j\frac{r}{2} \\
+        v_i(\frac{r}{2} - 1 - z) & v_i(\frac{r}{2} - 1 - z) + v_j\frac{r}{2}
+    \end{pmatrix}
+\end{equation}
+In the mind reader limit, this becomes
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        1-d & 1-d + \frac{r}{2} \\
+        \frac{r}{2} - 1 - z & r - 1 - z
+    \end{pmatrix}
+    \to
+    \begin{pmatrix}
+        0 & \frac{r}{2} \\
+        \frac{r}{2} - (1+z) - (1-d) & r - (1+z) - (1-d)
+    \end{pmatrix}.
+\end{equation}
+The analysis is the same as above (refer back to equation \ref{eq:0v3}).
+
+\subsection*{Dynamics: Types $0$ and $2$}
+
+When only types $0$ and $2$ are present, the payoff matrix is
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        v_i & v_i + v_j\frac{r}{2} \\
+        r\frac{v_i}{2} & r\frac{v_i + v_j}{2}
+    \end{pmatrix}
+\end{equation}
+In the mind reader limit, this becomes
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        1-d & (1-d)(1+\frac{r}{2}) \\
+        \frac{r}{2}(1-d) & r(1-d)
+    \end{pmatrix}
+    \to
+    \begin{pmatrix}
+        0 & \frac{r}{2}(1-d) \\
+        (\frac{r}{2} - 1)(1-d) & (r-1)(1-d)
+    \end{pmatrix},
+\end{equation}
+which is a donation game with $\B = \frac{r}{2}(1-d), \C = (1-\frac{r}{2})(1-d)$.
+The $\B/\C > k$ rule implies $r/(1-r) > k$, which in turn implies $r > 2k/(k+1)$, exactly the same as for a general PGG.
+
+\subsection*{Dynamics: Types $2$ and $3$}
+
+When only types $2$ and $3$ are present, the payoff matrix is
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        r\frac{v_i + v_j}{2} & r\frac{v_i + v_j}{2} \\
+        r\frac{v_i + v_j}{2} - (1+z)v_i & r\frac{v_i + v_j}{2} - (1+z)v_i
+    \end{pmatrix}.
+\end{equation}
+In the mind reader limit, this becomes
+\begin{equation}
+    a_{ij} = v
+    \begin{pmatrix}
+        r(1-d) & \frac{r}{2}(2-d) \\
+        \frac{r}{2}(2-d) - (1+z) & r - (1+z)
+    \end{pmatrix}
+    \to
+    \begin{pmatrix}
+        0 & \frac{r}{2}d \\
+        \frac{r}{2}d - (1+z) & rd - (1+z)
+    \end{pmatrix},
+\end{equation}
+which is a donation game with $\B = \frac{r}{2}d, \C = (1+z) - \frac{r}{2}d$.
+The $\B/\C > k$ rule implies $\frac{rd}{2(1+z) - rd} > k$, which in turn implies $\frac{rd}{1+z} > \frac{2k}{k+1}$.
+Equivalently, it is $r > \frac{2k(1+z)}{d(k+1)}$, which means that a higher value of $d$ aids cooperation and a higher value of $z$ deters it.
+This is a prisoner's dilemma provided that
+\begin{equation}
+    \begin{split}
+        T > R & > P > S \\
+        \B > \B - \C & > 0 > -\C \\
+        \therefore \B & > \C > 0 \\
+        \therefore \frac{r}{2}d & > 1+z - \frac{r}{2}d > 0 \\
+        \therefore rd & > 2(1+z) - rd > 0 \\
+        \therefore rd & > 1+z, \text{and} \\
+        2(1+z) - rd & > 0 \\
+        \therefore 2(1+z) & > rd \\
+        \therefore rd & > 1 + z > \frac{rd}{2}.
+    \end{split}
+\end{equation}
+This is a pretty narrow range of parameters, but it is fulfillable.
+
+New results in which type $0$ and $2$ individuals keep their endowment are forthcoming.
+
+\subsection*{Preliminary results with new payoff matrix}
+
+See subsequent pages for numerical results.
+Simulation results are forthcoming.
+
+\clearpage
+
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{../figures/hoarding_average_freqs_k_4_N_200_strats_1230.pdf}
+    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 200$ when \emph{all} types are initially present.}
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{../figures/payback_coop_freqs_k_4_N_1000_strats_30.pdf}
-    \caption{Simulation results: cooperation (top) and payback (bottom) frequencies for $k = 4$ and $N = 1000$ when only types $0, 3$ are initially present.}
+    \includegraphics[width=0.5\textwidth]{../figures/new_numerical_results_k_4_strats_1230.pdf}
+    \caption{Numerical results: final frequencies for $k = 4$ when \emph{all} types are initially present.}
 \end{figure}
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{../figures/new_type_freqs_k_4_d_09_strats_30.pdf}
-    \caption{Numerical results: replicator equation solutions when $k = 4$, $d = 0.9$, and only types $0, 3$ are initially present.}
+    \includegraphics[width=0.5\textwidth]{../figures/hoarding_average_freqs_k_4_N_200_strats_230.pdf}
+    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 200$ when types $2, 3, 0$ are initially present.}
 \end{figure}
+
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{../figures/new_numerical_results_k_4_strats_230.pdf}
+    \caption{Numerical results: final frequencies for $k = 4$ when types $2, 3, 0$ are initially present.}
+\end{figure}
+
+
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{../figures/hoarding_average_freqs_k_4_N_200_strats_20.pdf}
+    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 200$ when types $2, 0$ are initially present.}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{../figures/new_numerical_results_k_4_strats_20.pdf}
+    \caption{Numerical results: final frequencies for $k = 4$ when types $2, 0$ are initially present.}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{../figures/hoarding_average_freqs_k_4_N_200_strats_30.pdf}
+    \caption{Simulation results: average final frequencies for $k = 4$ and $N = 200$ when ypes $3, 0$ are initially present.}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=0.5\textwidth]{../figures/new_numerical_results_k_4_strats_30.pdf}
+    \caption{Numerical results: final frequencies for $k = 4$ when types $3, 0$ are initially present.}
+\end{figure}
+
+\clearpage
+
+\subsection*{Next steps}
+
+A sensible next step would be to consider the $0, 3$ case and see if we can use Qi's method to derive an approximation.
+Essentially, if an individual's strategy changes, there is some chance the bank notices and starts punishing them by decrementing their $v_i$.
+This changes the game they play with each of their neighbors.
+Ideally we'd be able to extend this to individuals having a ``state'' that changes with some probability depending on their current strategy or even their neighbor strategies (this would become indispensable in our ``threshold'' model).
 
 \end{document}
