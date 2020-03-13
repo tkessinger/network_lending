@@ -706,6 +706,49 @@ We can compare this to our ``old'' payoff matrix \begin{equation}
 \end{equation}
 and notice that type $0$ is going to be better off under the new payoff matrix, which should make cooperation harder to evolve.
 
+Let's see how we can relate this to Qi's model.
+Essentially, there are three games that can be played depending on individuals' strategies.
+The general case is
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        v_i & v_i + v_j\frac{r}{2} \\
+        v_i(\frac{r}{2} - 1 - z) & v_i(\frac{r}{2} - 1 - z) + v_j\frac{r}{2}
+    \end{pmatrix}
+\end{equation}
+If both have good reputations (i.e., both cooperated last round), then $v_i = v_j = v$:
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        v & v(1 + \frac{r}{2}) \\
+        v(\frac{r}{2} - 1 - z) & v(r - 1 - z)
+    \end{pmatrix}.
+\end{equation}
+If one has a good reputation (i.e., one cooperated last round), then $v_i = v$, $v_j = v(1-d)$:
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        v & v(1 + (1-d)\frac{r}{2}) \\
+        v(\frac{r}{2} - 1 - z) & v(\frac{r}{2} - 1 - z + (1-d)\frac{r}{2})
+    \end{pmatrix}
+\end{equation}
+If somehow both individuals switched strategies between update steps, then $v_i = v(1-d), v_j = v$:
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        v(1-d) & v(1-d) + v\frac{r}{2} \\
+        v(1-d)(\frac{r}{2} - 1 - z) & v(1-d)(\frac{r}{2} - 1 - z) + v\frac{r}{2}
+    \end{pmatrix}
+\end{equation}
+Finally, if both have bad reputations:
+\begin{equation}
+    a_{ij} =
+    \begin{pmatrix}
+        v(1-d) & v(1-d)(1+\frac{r}{2}) \\
+        v(1-d)(\frac{r}{2} - 1 - z) & v(1-d)(r - 1 - z)
+    \end{pmatrix}
+\end{equation}
+
 \section{An alternative lending model}
 
 Suppose we go back to having only two types, but now the bank diligently tracks individuals' income and, if it falls below some threshold, immediately decrements their loan amount.
