@@ -350,6 +350,10 @@ module NetworkLending
 		# updates a single individual's reputation
 		# depending on their current strategy
 		# this is just a wrapper for get_reputation() below
+		if pop.game.stochastic
+			pass
+		else
+
 		pop.reputations[indv] = get_reputation(pop.game, pop.strategies[indv])
 		if pop.strategies[indv] ∈ pop.game.good_reputations
 			pop.reputations[indv] = 1

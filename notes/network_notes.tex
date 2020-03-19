@@ -722,7 +722,12 @@ If both have good reputations (i.e., both cooperated last round), then $v_i = v_
     \begin{pmatrix}
         v & v(1 + \frac{r}{2}) \\
         v(\frac{r}{2} - 1 - z) & v(r - 1 - z)
-    \end{pmatrix}.
+    \end{pmatrix}
+    \to
+    v\begin{pmatrix}
+        0 & \frac{r}{2} \\
+        \frac{r}{2} - 2 - z & r - 2 - z)
+    \end{pmatrix}
 \end{equation}
 If one has a good reputation (i.e., one cooperated last round), then $v_i = v$, $v_j = v(1-d)$:
 \begin{equation}
@@ -730,6 +735,12 @@ If one has a good reputation (i.e., one cooperated last round), then $v_i = v$, 
     \begin{pmatrix}
         v & v(1 + (1-d)\frac{r}{2}) \\
         v(\frac{r}{2} - 1 - z) & v(\frac{r}{2} - 1 - z + (1-d)\frac{r}{2})
+    \end{pmatrix}
+    \to
+    v
+    \begin{pmatrix}
+        0 & \frac{r}{2} \\
+        \frac{r}{2} - 2 - z & r - 2 - z
     \end{pmatrix}
 \end{equation}
 If somehow both individuals switched strategies between update steps, then $v_i = v(1-d), v_j = v$:
@@ -739,6 +750,11 @@ If somehow both individuals switched strategies between update steps, then $v_i 
         v(1-d) & v(1-d) + v\frac{r}{2} \\
         v(1-d)(\frac{r}{2} - 1 - z) & v(1-d)(\frac{r}{2} - 1 - z) + v\frac{r}{2}
     \end{pmatrix}
+    \to
+    v\begin{pmatrix}
+        0 & \frac{r}{2} \\
+        (1-d)(\frac{r}{2} - 2 - z) & v(1-d)(\frac{r}{2} - 2 - z) + v\frac{r}{2}
+    \end{pmatrix}
 \end{equation}
 Finally, if both have bad reputations:
 \begin{equation}
@@ -747,7 +763,14 @@ Finally, if both have bad reputations:
         v(1-d) & v(1-d)(1+\frac{r}{2}) \\
         v(1-d)(\frac{r}{2} - 1 - z) & v(1-d)(r - 1 - z)
     \end{pmatrix}
+    \to
+    v\begin{pmatrix}
+        0 & (1-d)\frac{r}{2} \\
+        (1-d)(\frac{r}{2} - 2 - z) & (1-d)(r - 2 - z)
+    \end{pmatrix}
 \end{equation}
+We need to figure out what kinds of transition rates are needed between these different states for Qi's model to be applicable.
+Also note that this trick of ``subtract the first element so that the game is now a donation game'' may or may not work, as, with individuals playing different games with each neighbor, absolute fitnesses (not just differences) may once again matter.
 
 \section{An alternative lending model}
 
