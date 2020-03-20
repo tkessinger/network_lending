@@ -57,6 +57,10 @@ module NetworkLending
         end
     end
 
+	struct ReputationTracker
+		# new type for the reputation tracking mechanism
+		#
+
 	struct NetworkGame
 		# type for storing game and miscellaneous parameters
 
@@ -350,16 +354,26 @@ module NetworkLending
 		# updates a single individual's reputation
 		# depending on their current strategy
 		# this is just a wrapper for get_reputation() below
-		if pop.game.stochastic
-			pass
-		else
-
-		pop.reputations[indv] = get_reputation(pop.game, pop.strategies[indv])
-		if pop.strategies[indv] ∈ pop.game.good_reputations
-			pop.reputations[indv] = 1
-		else
-			pop.reputations[indv] = 0
+		for l in 1:pop.rep.update_rate
+			if !(pop.rep.global_updating)
+				if rand() < pop.rep.p
+					pop.reputations[indv] = get_reputation(pop.game, pop.strategies[indv])
+				end
+			else
+				for i in 1:N
+					if rand() < pop.rep.p
+						pop.reputations[i] = get_reputation(pop.game, pop.strategies[i])
+					end
+				end
+			end
 		end
+		#
+		# pop.reputations[indv] = get_reputation(pop.game, pop.strategies[indv])
+		# if pop.strategies[indv] ∈ pop.game.good_reputations
+		# 	pop.reputations[indv] = 1
+		# else
+		# 	pop.reputations[indv] = 0
+		# end
 	end
 
 	function get_all_reputations(
